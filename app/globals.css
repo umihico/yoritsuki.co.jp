@@ -281,6 +281,25 @@ h2 { font-size: clamp(24px, 3vw, 32px); color: var(--text-strong); font-weight: 
   padding: 44px 40px;
 }
 .notice-box p { font-size: 14.5px; color: var(--text); }
+
+/* 404 (not-found)。トップと同じ配色で3行構成。数字だけ控えめに大きく、他は通常サイズのミニマル。 */
+.notfound {
+  min-height: calc(100vh - 220px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 14px;
+  padding: 120px 24px;
+}
+.notfound-code {
+  font-size: clamp(56px, 9vw, 96px);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  color: var(--text-strong);
+}
 .notice-empty {
   margin-top: 22px;
   display: inline-flex;
