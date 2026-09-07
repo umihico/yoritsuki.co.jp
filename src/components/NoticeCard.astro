@@ -1,0 +1,9 @@
+---
+import { NOTICE } from '../lib/content.js';
+import T from './T.astro';
+// 公告ページ固有のコンテンツはこのカードのみ。
+---
+<div class="notice-box">
+  <p><T ja={NOTICE.body.ja} en={NOTICE.body.en} /></p>
+  <div class="notice-empty mono"><span class="dot" aria-hidden="true"></span><T ja={NOTICE.empty.ja} en={NOTICE.empty.en} /></div>
+</div>

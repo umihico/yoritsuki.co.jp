@@ -1,0 +1,289 @@
+---
+import '../styles/globals.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { SITE_URL } from '../lib/site.js';
+import { COMPANY, TITLE_DEFAULT } from '../lib/company.js';
+
+const {
+  title = TITLE_DEFAULT,
+  description = COMPANY.description,
+  canonicalPath = '/',
+} = Astro.props;
+
+const abs = (p) => new URL(p, SITE_URL).href;
+const canonical = abs(canonicalPath);
+const ogImage = abs('/ogp.png');
+
+// 指名検索時のナレッジパネル形成用の組織情報
+const ORG_JSONLD = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: COMPANY.name.ja,
+  alternateName: COMPANY.name.en,
+  url: `${SITE_URL}/`,
+  logo: `${SITE_URL}/icon-512.png`,
+  foundingDate: COMPANY.founding.date,
+  founder: { '@type': 'Person', name: COMPANY.founder.ja, alternateName: COMPANY.founder.en },
+  address: {
+    '@type': 'PostalAddress',
+    postalCode: COMPANY.address.postalCode,
+    addressRegion: COMPANY.address.region,
+    addressLocality: COMPANY.address.locality,
+    streetAddress: COMPANY.address.street,
+    addressCountry: COMPANY.address.country,
+  },
+};
+
+// テーマ・言語をペイント前に復元（FOUC回避）。no-js クラスの除去もここで行う。
+const BOOT_SCRIPT = `
+(function () {
+  var root = document.documentElement;
+  root.classList.remove('no-js');
+  try {
+    // 初期表示は常にダーク（OSのprefers-color-schemeは無視）。
+    // ユーザーがライトへ切り替えた場合のみlocalStorageに保存され、以後は永続的にその選択を尊重する。
+    var t = localStorage.getItem('yoritsuki-theme');
+    if (t) root.setAttribute('data-theme', t);
+    var l = localStorage.getItem('yoritsuki-lang');
+    if (l) { root.setAttribute('data-lang', l); root.setAttribute('lang', l); }
+  } catch (e) {}
+})();
+`;
+---
+
+<!doctype html>
+<html lang="ja" data-lang="ja" data-theme="dark" class="no-js">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0b1020" />
+    <meta name="color-scheme" content="dark" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="application-name" content={COMPANY.name.ja} />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="canonical" href={canonical} />
+    <meta name="format-detection" content="telephone=no, date=no, address=no, email=no" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content={COMPANY.name.ja} />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content={COMPANY.name.ja} />
+    <meta property="og:locale" content="ja_JP" />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={COMPANY.shortName} />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" href="/favicon-96.png" type="image/png" sizes="96x96" />
+    <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="icon" href="/favicon-16.png" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
+  </head>
+  <body>
+    <script is:inline set:html={BOOT_SCRIPT} />
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(ORG_JSONLD)} />
+    <Header />
+    <slot />
+    <Footer />
+    <script>
+      // ============ reveal-on-scroll（Next: components/RevealInit.jsx 相当） ============
+      // 初期状態は常に表示（no-JSセーフ）。JSが動く環境でのみ、ビューポート外の要素を隠して
+      // スクロールで表示する。
+      (() => {
+        const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (reduced || !('IntersectionObserver' in window)) return;
+        const io = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('reveal-in');
+                io.unobserve(entry.target);
+              }
+            });
+          },
+          { rootMargin: '0px 0px -8% 0px' }
+        );
+        document.querySelectorAll('[data-reveal]').forEach((el) => {
+          if (el.getBoundingClientRect().top > window.innerHeight) {
+            el.classList.add('reveal-pending');
+            io.observe(el);
+          }
+        });
+      })();
+
+      // ============ 言語・テーマトグル（Next: components/Toggles.jsx 相当） ============
+      (() => {
+        const root = document.documentElement;
+        const LANGS = [
+          { code: 'ja', short: 'JA', label: '日本語' },
+          { code: 'en', short: 'EN', label: 'English' },
+        ];
+        const langBtn = document.querySelector('.lang-btn');
+        const themeBtn = document.querySelector('.theme-toggle');
+        if (!langBtn || !themeBtn) return;
+
+        const otherLang = () => {
+          const cur = root.getAttribute('data-lang') || 'ja';
+          return LANGS.find((l) => l.code !== cur) ?? LANGS[1];
+        };
+        const syncLangBtn = () => {
+          const o = otherLang();
+          langBtn.textContent = o.short;
+          langBtn.setAttribute('aria-label', `Switch to ${o.label}`);
+        };
+        const applyLang = (lang) => {
+          root.setAttribute('data-lang', lang);
+          root.setAttribute('lang', lang);
+          const titled = document.querySelector('[data-title-ja]');
+          if (titled) {
+            document.title =
+              lang === 'en' ? titled.getAttribute('data-title-en') : titled.getAttribute('data-title-ja');
+          }
+        };
+        const applyTheme = (theme) => {
+          root.setAttribute('data-theme', theme);
+          const scheme = document.querySelector('meta[name="color-scheme"]');
+          if (scheme) scheme.setAttribute('content', theme);
+          const themeColor = document.querySelector('meta[name="theme-color"]');
+          if (themeColor) themeColor.setAttribute('content', theme === 'light' ? '#f4f7fb' : '#0b1020');
+        };
+
+        // 初期表示時、ブートスクリプトが復元した属性にボタン表示を同期する
+        syncLangBtn();
+        langBtn.addEventListener('click', () => {
+          const o = otherLang();
+          applyLang(o.code);
+          try { localStorage.setItem('yoritsuki-lang', o.code); } catch {}
+          syncLangBtn();
+        });
+        themeBtn.addEventListener('click', () => {
+          const next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+          applyTheme(next);
+          try { localStorage.setItem('yoritsuki-theme', next); } catch {}
+        });
+      })();
+
+      // ============ スライダー型ナビ（Next: components/NavLinks.jsx 相当） ============
+      (() => {
+        const nav = document.querySelector('.site-nav');
+        if (!nav) return;
+        const indicator = nav.querySelector('.nav-indicator');
+        const links = Array.from(nav.querySelectorAll('a'));
+
+        // セクションid → ハイライトするナビhref の対応（homeのみ）
+        const SPY_SECTIONS = [
+          { id: 'capabilities', href: '/#capabilities' },
+          { id: 'company', href: '/#company' },
+          { id: 'contact', href: '/#contact' },
+          // トップの公告セクション到達時はヘッダーの「公告」（専用ページリンク）を点灯させる
+          { id: 'notice', href: '/publicnotice/' },
+        ];
+
+        let active = null;
+        // アンカークリック直後は「クリックした場所」を現在地として優先する。
+        let intent = null;
+
+        const measure = () => {
+          const link = nav.querySelector('a.active');
+          if (!link) {
+            indicator.style.opacity = '0';
+            return;
+          }
+          indicator.style.left = link.offsetLeft + 'px';
+          indicator.style.width = link.offsetWidth + 'px';
+          indicator.style.opacity = '1';
+        };
+        const setActive = (href) => {
+          active = href;
+          links.forEach((a) => {
+            const on = a.getAttribute('href') === href;
+            a.classList.toggle('active', on);
+            if (on) a.setAttribute('aria-current', 'true');
+            else a.removeAttribute('aria-current');
+          });
+          measure();
+        };
+
+        // 言語切替で文字幅が変わるため、<html data-lang> の変化を監視して再計測
+        const mo = new MutationObserver(measure);
+        mo.observe(document.documentElement, { attributes: true, attributeFilter: ['data-lang'] });
+
+        // 公告専用ページではナビの「公告」を点灯させる
+        if (window.location.pathname.startsWith('/publicnotice')) {
+          setActive('/publicnotice/');
+          window.addEventListener('resize', measure);
+          return;
+        }
+
+        const els = SPY_SECTIONS
+          .map((s) => ({ ...s, el: document.getElementById(s.id) }))
+          .filter((s) => s.el);
+        if (!els.length) {
+          window.addEventListener('resize', measure);
+          return;
+        }
+
+        let raf = 0;
+        const update = () => {
+          raf = 0;
+          if (intent) {
+            setActive(intent);
+            return;
+          }
+          // ビューポート上から40%の位置を「現在地」の基準線とする
+          const line = window.innerHeight * 0.4;
+          let current = null;
+          for (const s of els) {
+            if (s.el.getBoundingClientRect().top <= line) current = s.href;
+          }
+          // 最下部のセクションは基準線まで上がりきれないことがあるため、
+          // ページ末尾に達したら最後のセクションを現在地とする
+          const doc = document.documentElement;
+          if (window.innerHeight + window.scrollY >= doc.scrollHeight - 2) {
+            current = els[els.length - 1].href;
+          }
+          setActive(current);
+        };
+        const onScroll = () => {
+          if (!raf) raf = requestAnimationFrame(update);
+        };
+
+        // ハッシュ（アンカー）遷移で意図をロック
+        const applyHashIntent = () => {
+          const href = '/' + window.location.hash;
+          if (SPY_SECTIONS.some((s) => s.href === href)) {
+            intent = href;
+            setActive(href);
+          }
+        };
+        // 手動操作で意図ロックを解除
+        const clearIntent = () => {
+          if (!intent) return;
+          intent = null;
+          onScroll();
+        };
+
+        if (window.location.hash) applyHashIntent();
+        update();
+        window.addEventListener('scroll', onScroll, { passive: true });
+        window.addEventListener('resize', onScroll);
+        window.addEventListener('resize', measure);
+        window.addEventListener('hashchange', applyHashIntent);
+        window.addEventListener('wheel', clearIntent, { passive: true });
+        window.addEventListener('touchstart', clearIntent, { passive: true });
+        window.addEventListener('keydown', clearIntent);
+        window.addEventListener('mousedown', clearIntent);
+      })();
+    </script>
+  </body>
+</html>

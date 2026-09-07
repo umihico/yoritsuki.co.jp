@@ -1,0 +1,48 @@
+---
+import { COMPANY_ROWS } from '../lib/content.js';
+import SectionHead from './SectionHead.astro';
+import T from './T.astro';
+
+// テキスト中の指定語の直前を優先的な改行位置にする（語自体は途中で割らない）
+const esc = (s) =>
+  String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+function withBreakHTML(text, breakBefore) {
+  if (breakBefore && text.includes(breakBefore)) {
+    const i = text.indexOf(breakBefore);
+    return `${esc(text.slice(0, i))}<wbr/><span class="nowrap">${esc(text.slice(i))}</span>`;
+  }
+  return esc(text);
+}
+---
+<section id="company">
+  <div class="wrap">
+    <SectionHead ja="会社概要" en="Company" />
+    <dl class="company-table" data-reveal>
+      {COMPANY_ROWS.map((row) => (
+        <div class="company-row">
+          <dt><T ja={row.label.ja} en={row.label.en} /></dt>
+          {row.href ? (
+            <dd>
+              <div class="main">
+                <span class="ja"><a class="addr-link" href={row.href} target="_blank" rel="noopener noreferrer" set:html={withBreakHTML(row.main.ja, row.breakBefore)} /></span><span class="en"><a class="addr-link" href={row.href} target="_blank" rel="noopener noreferrer" set:html={withBreakHTML(row.main.en, row.breakBefore)} /></span>
+              </div>
+              {row.sub && (
+                <div class="sub">
+                  {row.sub.ja && <span class="ja" set:html={withBreakHTML(row.sub.ja, row.breakBefore)} />}{row.sub.en && <span class="en" set:html={withBreakHTML(row.sub.en, row.breakBefore)} />}
+                </div>
+              )}
+            </dd>
+          ) : (
+            <dd>
+              <div class="main"><T ja={row.main.ja} en={row.main.en} /></div>
+              {row.sub && <div class="sub"><T ja={row.sub.ja} en={row.sub.en} /></div>}
+            </dd>
+          )}
+        </div>
+      ))}
+    </dl>
+  </div>
+</section>

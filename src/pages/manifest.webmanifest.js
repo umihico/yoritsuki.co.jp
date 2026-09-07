@@ -1,10 +1,10 @@
-import { COMPANY } from '../lib/company';
+import { COMPANY } from '../lib/company.js';
 
-export const dynamic = 'force-static';
+export const prerender = true;
 
 // PWA/ホーム画面用マニフェスト。アイコンは brand/yoritsuki-logo.svg から生成した2行版。
-export default function manifest() {
-  return {
+export function GET() {
+  const manifest = {
     name: COMPANY.name.ja,
     short_name: COMPANY.shortName,
     description: COMPANY.description,
@@ -18,4 +18,7 @@ export default function manifest() {
       { src: '/icon-512.png', type: 'image/png', sizes: '512x512', purpose: 'any' },
     ],
   };
+  return new Response(JSON.stringify(manifest), {
+    headers: { 'Content-Type': 'application/manifest+json' },
+  });
 }

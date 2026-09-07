@@ -1,0 +1,17 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import NoticeCard from '../../components/NoticeCard.astro';
+import SectionHead from '../../components/SectionHead.astro';
+import { COMPANY } from '../../lib/company.js';
+
+const TITLE = `公告 | ${COMPANY.name.ja}`;
+const DESCRIPTION = `${COMPANY.name.ja}の電子公告ページです。`;
+---
+<Layout title={TITLE} description={DESCRIPTION} canonicalPath="/publicnotice/">
+  <main class="notice-main" data-title-ja={TITLE} data-title-en={`Public Notice | ${COMPANY.name.en}`}>
+    <div class="wrap">
+      <SectionHead ja="公告" en="Public Notice" />
+      <NoticeCard />
+    </div>
+  </main>
+</Layout>

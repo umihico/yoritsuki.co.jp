@@ -1,0 +1,50 @@
+---
+import { CAPABILITIES } from '../lib/content.js';
+import SectionHead from './SectionHead.astro';
+import T from './T.astro';
+---
+<section id="capabilities">
+  <div class="wrap">
+    <SectionHead ja="事業内容" en="Capabilities" />
+    <div class="cards" data-reveal>
+      {CAPABILITIES.map((card) => (
+        <div class="card">
+          <div class="glyph" aria-hidden="true">
+            {card.glyph === 'web' && (
+              <svg viewBox="0 0 88 56" fill="none" stroke="currentColor" stroke-width="1.4">
+                <rect x="2" y="4" width="46" height="34" rx="4" />
+                <line x1="8" y1="14" x2="30" y2="14" />
+                <line x1="8" y1="21" x2="24" y2="21" />
+                <line x1="8" y1="28" x2="27" y2="28" />
+                <rect x="54" y="4" width="32" height="15" rx="3" />
+                <rect x="54" y="24" width="32" height="14" rx="3" />
+              </svg>
+            )}
+            {card.glyph === 'product' && (
+              <svg viewBox="0 0 88 56" fill="none" stroke="currentColor" stroke-width="1.4">
+                <line x1="44" y1="50" x2="44" y2="26" />
+                <path d="M44 34 C44 24, 34 20, 26 20 C26 30, 36 34, 44 34 Z" />
+                <path d="M44 26 C44 16, 54 12, 62 12 C62 22, 52 26, 44 26 Z" />
+                <line x1="30" y1="50" x2="58" y2="50" />
+              </svg>
+            )}
+            {card.glyph === 'server' && (
+              <svg viewBox="0 0 88 56" fill="none" stroke="currentColor" stroke-width="1.4">
+                <rect x="22" y="6" width="44" height="14" rx="3" />
+                <rect x="22" y="24" width="44" height="14" rx="3" />
+                <circle cx="30" cy="13" r="1.6" />
+                <circle cx="30" cy="31" r="1.6" />
+                <line x1="48" y1="13" x2="60" y2="13" />
+                <line x1="48" y1="31" x2="60" y2="31" />
+                <line x1="44" y1="38" x2="44" y2="46" />
+                <line x1="32" y1="50" x2="56" y2="50" />
+              </svg>
+            )}
+          </div>
+          <h3><T ja={card.title.ja} en={card.title.en} /></h3>
+          <p><T ja={card.body.ja} en={card.body.en} /></p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

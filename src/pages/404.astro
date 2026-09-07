@@ -1,0 +1,13 @@
+---
+import Layout from '../layouts/Layout.astro';
+import T from '../components/T.astro';
+// 404。トップと同じ配色・3行構成。数字だけ .notfound-code を新設し、
+// 見出しは素のテキスト、リンクは既存の .notice-link を流用（独自スタイルは作らない）。
+---
+<Layout>
+  <main class="notfound">
+    <p class="notfound-code mono" aria-hidden="true">404</p>
+    <p><T ja="ページが見つかりません" en="Page not found" /></p>
+    <a href="/" class="notice-link"><T ja="← トップに戻る" en="← Back to Home" /></a>
+  </main>
+</Layout>

@@ -1,0 +1,10 @@
+import { SITE_URL } from '../lib/site.js';
+
+export const prerender = true;
+
+export function GET() {
+  const body = `User-Agent: *\nAllow: /\n\nSitemap: ${SITE_URL}/sitemap.xml\n`;
+  return new Response(body, {
+    headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+  });
+}

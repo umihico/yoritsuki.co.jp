@@ -1,0 +1,26 @@
+---
+import Brand from './Brand.astro';
+import { COMPANY } from '../lib/company.js';
+import { NAV_ITEMS } from '../lib/content.js';
+---
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/" aria-label={`${COMPANY.name.ja} トップページ`}>
+      <Brand />
+    </a>
+    <div class="nav-group">
+      <nav class="site-nav" aria-label="グローバルナビゲーション">
+        <span class="nav-indicator" aria-hidden="true" style="left:0;width:0;opacity:0"></span>
+        {NAV_ITEMS.map((item) => (
+          <a href={item.href}><span class="ja">{item.ja}</span><span class="en">{item.en}</span></a>
+        ))}
+      </nav>
+      <div class="toggles" role="group" aria-label="言語・テーマ設定">
+        <button type="button" class="lang-btn mono" aria-label="Switch to English">EN</button>
+        <button type="button" class="theme-toggle" aria-label="テーマ切替 / Toggle theme">
+          <span class="icon-moon" aria-hidden="true">🌙</span><span class="icon-sun" aria-hidden="true">☀️</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>

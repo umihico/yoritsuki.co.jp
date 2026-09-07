@@ -25,18 +25,18 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - name: Build (static export)
+      - name: Build (static)
         run: npm run build
         env:
           # canonical / OGP / sitemap / robots / JSON-LD が参照する本番URL
-          NEXT_PUBLIC_SITE_URL: https://yoritsuki.co.jp
-      # _next/ 配下を Jekyll に消されないための保険
+          PUBLIC_SITE_URL: https://yoritsuki.co.jp
+      # _astro/ 配下を Jekyll に消されないための保険
       - name: Disable Jekyll
-        run: touch out/.nojekyll
+        run: touch dist/.nojekyll
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: out
+          path: dist
 
   deploy:
     needs: build

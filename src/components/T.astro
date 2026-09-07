@@ -1,0 +1,5 @@
+---
+// 二言語テキスト。表示側の出し分けは CSS（:root[data-lang] .ja/.en）が担う。
+const { ja, en } = Astro.props;
+---
+<span class="ja">{ja}</span><span class="en">{en}</span>

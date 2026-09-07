@@ -1,0 +1,14 @@
+---
+import { CONTACT } from '../lib/content.js';
+import SectionHead from './SectionHead.astro';
+import T from './T.astro';
+// お問い合わせ。フォームは設けず、紹介制である旨のみ案内する。
+---
+<section id="contact">
+  <div class="wrap">
+    <SectionHead ja="お問い合わせ" en="Contact" />
+    <div class="notice-box" data-reveal>
+      <p><T ja={CONTACT.body.ja} en={CONTACT.body.en} /></p>
+    </div>
+  </div>
+</section>

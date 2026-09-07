@@ -1,0 +1,9 @@
+---
+// 全ページ共通のセクション見出し。h2 + 小さな青ラベルの1パターンのみ。
+// 表示言語の反対側の言語がラベルに入る（JA時: 英語ラベル / EN時: 日本語ラベル）。
+const { ja, en } = Astro.props;
+---
+<div class="section-head" data-reveal>
+  <h2><span class="ja">{ja}</span><span class="en">{en}</span></h2>
+  <span class="section-en mono"><span class="ja">{en}</span><span class="en">{ja}</span></span>
+</div>

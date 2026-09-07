@@ -1,0 +1,20 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Hero from '../components/Hero.astro';
+import Capabilities from '../components/Capabilities.astro';
+import ForYou from '../components/ForYou.astro';
+import Company from '../components/Company.astro';
+import Contact from '../components/Contact.astro';
+import NoticeSection from '../components/NoticeSection.astro';
+import { COMPANY, TITLE_DEFAULT } from '../lib/company.js';
+---
+<Layout title={TITLE_DEFAULT} description={COMPANY.description} canonicalPath="/">
+  <main data-title-ja={TITLE_DEFAULT} data-title-en={`${COMPANY.name.en} | Software Engineering`}>
+    <Hero />
+    <Capabilities />
+    <ForYou />
+    <Company />
+    <Contact />
+    <NoticeSection />
+  </main>
+</Layout>

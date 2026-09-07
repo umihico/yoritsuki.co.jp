@@ -1,15 +1,14 @@
 {
   "name": "yoritsuki",
   "private": true,
+  "type": "module",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "build:local": "NEXT_PUBLIC_SITE_URL=http://localhost:8642 next build",
-    "start": "next start"
+    "dev": "astro dev",
+    "build": "astro build",
+    "build:local": "PUBLIC_SITE_URL=http://localhost:8642 astro build",
+    "preview": "astro preview"
   },
   "dependencies": {
-    "next": "^15.3.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "astro": "^7.3.1"
   }
 }

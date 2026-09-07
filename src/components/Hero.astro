@@ -1,0 +1,18 @@
+---
+import { HERO } from '../lib/content.js';
+import T from './T.astro';
+---
+<section class="hero" id="hero">
+  <div class="wrap">
+    <p class="eyebrow mono">{HERO.eyebrow}</p>
+    <h1>
+      <span class="ja">{HERO.title.ja[0]}<br /><span class="grad">{HERO.title.ja[1]}</span></span>
+      <span class="en">{HERO.title.en[0]}<br /><span class="grad">{HERO.title.en[1]}</span></span>
+    </h1>
+    <div class="decls">
+      {HERO.declarations.map((d, i) => (
+        <p><span class="decl-num mono" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span><T ja={d.ja} en={d.en} /></p>
+      ))}
+    </div>
+  </div>
+</section>
