@@ -11,7 +11,7 @@ const locale = getLocale(Astro);
     <SectionHead ja="公告" en="Public Notice" />
     <div class="notice-box" data-reveal>
       <p><T ja={NOTICE_SECTION.body.ja} en={NOTICE_SECTION.body.en} /></p>
-      <a class="notice-link" href={localizedHref(locale, '/publicnotice/')}><T ja={NOTICE_SECTION.link.ja} en={NOTICE_SECTION.link.en} /><span aria-hidden="true">→</span></a>
+      <a class="notice-link" href={localizedHref(locale, '/publicnotice/')} data-href-ja="/publicnotice/" data-href-en="/en/publicnotice/"><T ja={NOTICE_SECTION.link.ja} en={NOTICE_SECTION.link.en} /><span aria-hidden="true">→</span></a>
     </div>
   </div>
 </section>

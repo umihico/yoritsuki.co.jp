@@ -1,6 +1,7 @@
 ---
 // 全ページ共通のセクション見出し。h2 + 小さな青ラベルの1パターンのみ。
 // 見出しは現在言語、青ラベルは反対言語（JA時: 英語ラベル / EN時: 日本語ラベル）。
+// もう一方の言語は <template> に不活性同梱し、無遷移トグルで入替える。
 import { getLocale } from '../lib/i18n.js';
 const { ja, en } = Astro.props;
 const locale = getLocale(Astro);
@@ -8,6 +9,6 @@ const main = locale === 'en' ? en : ja;
 const label = locale === 'en' ? ja : en;
 ---
 <div class="section-head" data-reveal>
-  <h2>{main}</h2>
-  <span class="section-en mono">{label}</span>
+  <h2><span data-i18n>{main}</span><template data-i18n-alt>{label}</template></h2>
+  <span class="section-en mono"><span data-i18n>{label}</span><template data-i18n-alt>{main}</template></span>
 </div>

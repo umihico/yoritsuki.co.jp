@@ -4,15 +4,18 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import { SITE_URL } from '../lib/site.js';
 import { COMPANY, TITLE_DEFAULT } from '../lib/company.js';
-import { getLocale, alternatePaths } from '../lib/i18n.js';
+import { getLocale, pick, alternatePaths } from '../lib/i18n.js';
 
 const locale = getLocale(Astro);
 const isEn = locale === 'en';
 
-const {
-  title = TITLE_DEFAULT,
-  description = isEn ? COMPANY.descriptionEn : COMPANY.description,
-} = Astro.props;
+// meta は {title:{ja,en}, description:{ja,en}} のペア。無指定時は既定値。
+// 両言語分を <html data-*> に載せ、無遷移トグル時にクライアントで差し替える。
+const { meta } = Astro.props;
+const titlePair = meta?.title ?? { ja: TITLE_DEFAULT, en: TITLE_DEFAULT };
+const descPair = meta?.description ?? { ja: COMPANY.description, en: COMPANY.descriptionEn };
+const title = Astro.props.title ?? pick(locale, titlePair);
+const description = Astro.props.description ?? pick(locale, descPair);
 
 const abs = (p) => new URL(p, SITE_URL).href;
 // 現在ページの両言語パスを導出（hreflang・canonical・言語トグルで共有）。
@@ -78,7 +81,17 @@ const BOOT_SCRIPT = `
 ---
 
 <!doctype html>
-<html lang={locale} data-theme="dark" class="no-js">
+<html
+  lang={locale}
+  data-theme="dark"
+  class="no-js"
+  data-title-ja={titlePair.ja}
+  data-title-en={titlePair.en}
+  data-desc-ja={descPair.ja}
+  data-desc-en={descPair.en}
+  data-url-ja={alt.ja}
+  data-url-en={alt.en}
+>
   <head>
     <meta charset="utf-8" />
     <script is:inline set:html={REDIRECT_SCRIPT} />
@@ -151,16 +164,67 @@ const BOOT_SCRIPT = `
         });
       })();
 
-      // ============ 言語Cookie保存・テーマトグル ============
+      // ============ 無遷移の言語切替（DOM差替え + history.replaceState） ============
+      // 初期HTMLは単一言語（もう一方は <template data-i18n-alt> に不活性同梱＝非索引）。
+      // トグルはページ遷移せず、[data-i18n] とその直後の <template> の中身を入替えて
+      // 言語を差し替え、URL・lang・title 等だけ書き換える。スクロールは保持される。
+      // JS無効時は <a href> のまま通常遷移するフォールバックが効く。
       (() => {
         const root = document.documentElement;
-        // 言語トグルはリンク（href=反対言語URL）。クリック時に選択をCookieへ保存し、
-        // あとは通常遷移させる（次回以降のリダイレクト判定に使う）。
         const langLink = document.querySelector('.lang-btn');
         if (langLink) {
-          langLink.addEventListener('click', () => {
-            const to = langLink.getAttribute('data-lang-target');
-            if (to) document.cookie = `yoritsuki-lang=${to}; path=/; max-age=31536000; samesite=lax`;
+          const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+
+          const applyLang = (target) => {
+            // 1) 本文テキスト: [data-i18n] ⇄ 直後の <template data-i18n-alt> を入替え
+            document.querySelectorAll('[data-i18n]').forEach((el) => {
+              const tpl = el.nextElementSibling;
+              if (!tpl || tpl.tagName !== 'TEMPLATE' || !tpl.hasAttribute('data-i18n-alt')) return;
+              const keep = el.innerHTML;
+              el.innerHTML = tpl.innerHTML;
+              tpl.innerHTML = keep;
+            });
+            // 2) 言語依存の内部リンク(href)を対象言語へ
+            document.querySelectorAll('[data-href-ja][data-href-en]').forEach((a) => {
+              const h = a.getAttribute('data-href-' + target);
+              if (h != null) a.setAttribute('href', h);
+            });
+            // 3) html lang / title / description / og / canonical
+            root.setAttribute('lang', target);
+            const ti = root.getAttribute('data-title-' + target);
+            if (ti) document.title = ti;
+            const de = root.getAttribute('data-desc-' + target);
+            const dm = document.querySelector('meta[name="description"]');
+            if (de && dm) dm.setAttribute('content', de);
+            const url = root.getAttribute('data-url-' + target);
+            if (url) {
+              history.replaceState(history.state, '', url + location.hash);
+              const absUrl = location.origin + url;
+              const c = document.querySelector('link[rel="canonical"]');
+              if (c) c.setAttribute('href', absUrl);
+              const ou = document.querySelector('meta[property="og:url"]');
+              if (ou) ou.setAttribute('content', absUrl);
+            }
+            const ol = document.querySelector('meta[property="og:locale"]');
+            if (ol) ol.setAttribute('content', target === 'en' ? 'en_US' : 'ja_JP');
+            const ola = document.querySelector('meta[property="og:locale:alternate"]');
+            if (ola) ola.setAttribute('content', target === 'en' ? 'ja_JP' : 'en_US');
+            // 4) 記憶（次回の直接訪問時のリダイレクト判定に使う）
+            try { document.cookie = `yoritsuki-lang=${target}; path=/; max-age=31536000; samesite=lax`; } catch (e) {}
+            // 5) トグル自身を「反対言語」に更新
+            const back = target === 'en' ? 'ja' : 'en';
+            langLink.setAttribute('data-lang-target', back);
+            const backUrl = root.getAttribute('data-url-' + back);
+            if (backUrl) langLink.setAttribute('href', backUrl);
+            langLink.textContent = back === 'en' ? 'EN' : 'JA';
+            langLink.setAttribute('aria-label', back === 'en' ? 'Switch to English' : '日本語に切り替え');
+            // 6) 依存UI（ナビのハイライト等）へ通知
+            document.dispatchEvent(new CustomEvent('i18n:changed', { detail: { lang: target } }));
+          };
+
+          langLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            applyLang(langLink.getAttribute('data-lang-target'));
           });
         }
 
@@ -188,13 +252,14 @@ const BOOT_SCRIPT = `
         const indicator = nav.querySelector('.nav-indicator');
         const links = Array.from(nav.querySelectorAll('a'));
 
-        // 言語別URL接頭辞（en配下は /en）。ナビhrefと一致させるため現在パスから導出。
-        const base = window.location.pathname.indexOf('/en') === 0 ? '/en' : '';
+        // 言語切替(無遷移)でナビhrefの /en 接頭辞が変わるため、比較は論理パス
+        // （先頭の /en を除去した形）で行い、言語非依存でハイライトを維持する。
+        const norm = (href) => (href || '').replace(/^\/en(?=\/|$)/, '') || '/';
         const SPY_SECTIONS = [
-          { id: 'capabilities', href: `${base}/#capabilities` },
-          { id: 'company', href: `${base}/#company` },
-          { id: 'contact', href: `${base}/#contact` },
-          { id: 'notice', href: `${base}/publicnotice/` },
+          { id: 'capabilities', href: '/#capabilities' },
+          { id: 'company', href: '/#company' },
+          { id: 'contact', href: '/#contact' },
+          { id: 'notice', href: '/publicnotice/' },
         ];
 
         let active = null;
@@ -213,7 +278,7 @@ const BOOT_SCRIPT = `
         const setActive = (href) => {
           active = href;
           links.forEach((a) => {
-            const on = a.getAttribute('href') === href;
+            const on = norm(a.getAttribute('href')) === href;
             a.classList.toggle('active', on);
             if (on) a.setAttribute('aria-current', 'true');
             else a.removeAttribute('aria-current');
@@ -223,8 +288,9 @@ const BOOT_SCRIPT = `
 
         // 公告専用ページ（ja/en）ではナビの「公告」を点灯させる
         if (/^\/(en\/)?publicnotice/.test(window.location.pathname)) {
-          setActive(`${base}/publicnotice/`);
+          setActive('/publicnotice/');
           window.addEventListener('resize', measure);
+          document.addEventListener('i18n:changed', measure);
           return;
         }
 
@@ -259,7 +325,7 @@ const BOOT_SCRIPT = `
         };
 
         const applyHashIntent = () => {
-          const href = base + '/' + window.location.hash;
+          const href = '/' + window.location.hash;
           if (SPY_SECTIONS.some((s) => s.href === href)) {
             intent = href;
             setActive(href);
@@ -281,6 +347,8 @@ const BOOT_SCRIPT = `
         window.addEventListener('touchstart', clearIntent, { passive: true });
         window.addEventListener('keydown', clearIntent);
         window.addEventListener('mousedown', clearIntent);
+        // 言語切替(無遷移)後はhrefやラベル幅が変わるため、位置を測り直す
+        document.addEventListener('i18n:changed', () => { measure(); });
       })();
     </script>
   </body>

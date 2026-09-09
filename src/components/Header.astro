@@ -5,24 +5,27 @@ import { NAV_ITEMS } from '../lib/content.js';
 import { getLocale, pick, localizedHref, alternatePaths } from '../lib/i18n.js';
 
 const locale = getLocale(Astro);
-const alt = alternatePaths(Astro.url.pathname);
-// 言語トグル: 反対言語のURLへ遷移するリンク。クリック時にCookieへ選択を保存する（script側）。
+const alt = locale === 'en' ? 'ja' : 'en';
+const paths = alternatePaths(Astro.url.pathname);
+// 言語トグル: 反対言語のURL（no-JS時は通常遷移）。JSありなら無遷移でDOM差替え。
 const other = locale === 'en' ? 'ja' : 'en';
-const otherHref = other === 'en' ? alt.en : alt.ja;
+const otherHref = other === 'en' ? paths.en : paths.ja;
 const otherShort = other === 'en' ? 'EN' : 'JA';
 const otherLabel = other === 'en' ? 'Switch to English' : '日本語に切り替え';
 const brandLabel = locale === 'en' ? `${COMPANY.name.en} home` : `${COMPANY.name.ja} トップページ`;
 ---
 <header class="site-header">
   <div class="wrap">
-    <a class="brand" href={localizedHref(locale, '/')} aria-label={brandLabel}>
+    <a class="brand" href={localizedHref(locale, '/')} data-href-ja="/" data-href-en="/en/" aria-label={brandLabel}>
       <Brand />
     </a>
     <div class="nav-group">
       <nav class="site-nav" aria-label={locale === 'en' ? 'Global navigation' : 'グローバルナビゲーション'}>
         <span class="nav-indicator" aria-hidden="true" style="left:0;width:0;opacity:0"></span>
         {NAV_ITEMS.map((item) => (
-          <a href={localizedHref(locale, item.href)}>{pick(locale, item)}</a>
+          <a href={localizedHref(locale, item.href)} data-href-ja={item.href} data-href-en={localizedHref('en', item.href)}>
+            <span data-i18n>{pick(locale, item)}</span><template data-i18n-alt>{pick(alt, item)}</template>
+          </a>
         ))}
       </nav>
       <div class="toggles" role="group" aria-label={locale === 'en' ? 'Language & theme' : '言語・テーマ設定'}>

@@ -1,0 +1,30 @@
+---
+// 会社概要テーブルの1行分の値（dd の中身）を、指定ロケールで描画する。
+// Company.astro が「現在ロケール（ライブ）」と「もう一方（<template>）」の2回呼び出し、
+// 無遷移トグルで dd の中身ごと入れ替える。sub の有無が言語で非対称なため、
+// 行まるごとをロケール単位で描き分けるのが最も安全。
+import { pick } from '../lib/i18n.js';
+const { row, locale } = Astro.props;
+
+const esc = (s) =>
+  String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+function withBreakHTML(text, breakBefore) {
+  if (breakBefore && text.includes(breakBefore)) {
+    const i = text.indexOf(breakBefore);
+    return `${esc(text.slice(0, i))}<wbr/><span class="nowrap">${esc(text.slice(i))}</span>`;
+  }
+  return esc(text);
+}
+
+const main = pick(locale, row.main);
+const sub = row.sub ? row.sub[locale] : undefined;
+---
+{row.href ? (
+  <div class="main"><a class="addr-link" href={row.href} target="_blank" rel="noopener noreferrer" set:html={withBreakHTML(main, row.breakBefore)} /></div>
+) : (
+  <div class="main">{main}</div>
+)}
+{sub && <div class="sub"><span set:html={withBreakHTML(sub, row.breakBefore)} /></div>}

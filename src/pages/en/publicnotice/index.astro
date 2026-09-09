@@ -2,9 +2,7 @@
 import Layout from '../../../layouts/Layout.astro';
 import NoticeMain from '../../../components/NoticeMain.astro';
 import { NOTICE_META } from '../../../lib/company.js';
-import { getLocale, pick } from '../../../lib/i18n.js';
-const locale = getLocale(Astro);
 ---
-<Layout title={pick(locale, NOTICE_META.title)} description={pick(locale, NOTICE_META.description)}>
+<Layout meta={NOTICE_META}>
   <NoticeMain />
 </Layout>

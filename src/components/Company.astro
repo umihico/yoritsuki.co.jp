@@ -1,52 +1,22 @@
 ---
 import { COMPANY_ROWS } from '../lib/content.js';
 import SectionHead from './SectionHead.astro';
+import CompanyDd from './CompanyDd.astro';
 import { getLocale, pick } from '../lib/i18n.js';
 
 const locale = getLocale(Astro);
-
-// テキスト中の指定語の直前を優先的な改行位置にする（語自体は途中で割らない）
-const esc = (s) =>
-  String(s)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
-function withBreakHTML(text, breakBefore) {
-  if (breakBefore && text.includes(breakBefore)) {
-    const i = text.indexOf(breakBefore);
-    return `${esc(text.slice(0, i))}<wbr/><span class="nowrap">${esc(text.slice(i))}</span>`;
-  }
-  return esc(text);
-}
+const alt = locale === 'en' ? 'ja' : 'en';
 ---
 <section id="company">
   <div class="wrap">
     <SectionHead ja="会社概要" en="Company" />
     <dl class="company-table" data-reveal>
-      {COMPANY_ROWS.map((row) => {
-        const main = pick(locale, row.main);
-        const sub = row.sub ? row.sub[locale] : undefined;
-        return (
-          <div class="company-row">
-            <dt>{pick(locale, row.label)}</dt>
-            {row.href ? (
-              <dd>
-                <div class="main">
-                  <a class="addr-link" href={row.href} target="_blank" rel="noopener noreferrer" set:html={withBreakHTML(main, row.breakBefore)} />
-                </div>
-                {sub && (
-                  <div class="sub"><span set:html={withBreakHTML(sub, row.breakBefore)} /></div>
-                )}
-              </dd>
-            ) : (
-              <dd>
-                <div class="main">{main}</div>
-                {sub && <div class="sub">{sub}</div>}
-              </dd>
-            )}
-          </div>
-        );
-      })}
+      {COMPANY_ROWS.map((row) => (
+        <div class="company-row">
+          <dt><span data-i18n>{pick(locale, row.label)}</span><template data-i18n-alt>{pick(alt, row.label)}</template></dt>
+          <dd data-i18n><CompanyDd row={row} locale={locale} /></dd><template data-i18n-alt><CompanyDd row={row} locale={alt} /></template>
+        </div>
+      ))}
     </dl>
   </div>
 </section>
