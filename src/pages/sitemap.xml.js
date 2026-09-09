@@ -5,7 +5,9 @@ export const prerender = true;
 export function GET() {
   const urls = [
     { loc: `${SITE_URL}/`, changefreq: 'monthly', priority: '1' },
+    { loc: `${SITE_URL}/en/`, changefreq: 'monthly', priority: '1' },
     { loc: `${SITE_URL}/publicnotice/`, changefreq: 'monthly', priority: '0.5' },
+    { loc: `${SITE_URL}/en/publicnotice/`, changefreq: 'monthly', priority: '0.5' },
   ];
   const body =
     '<?xml version="1.0" encoding="UTF-8"?>\n' +

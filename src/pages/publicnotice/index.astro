@@ -1,17 +1,10 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import NoticeCard from '../../components/NoticeCard.astro';
-import SectionHead from '../../components/SectionHead.astro';
-import { COMPANY } from '../../lib/company.js';
-
-const TITLE = `公告 | ${COMPANY.name.ja}`;
-const DESCRIPTION = `${COMPANY.name.ja}の電子公告ページです。`;
+import NoticeMain from '../../components/NoticeMain.astro';
+import { NOTICE_META } from '../../lib/company.js';
+import { getLocale, pick } from '../../lib/i18n.js';
+const locale = getLocale(Astro);
 ---
-<Layout title={TITLE} description={DESCRIPTION} canonicalPath="/publicnotice/">
-  <main class="notice-main" data-title-ja={TITLE} data-title-en={`Public Notice | ${COMPANY.name.en}`}>
-    <div class="wrap">
-      <SectionHead ja="公告" en="Public Notice" />
-      <NoticeCard />
-    </div>
-  </main>
+<Layout title={pick(locale, NOTICE_META.title)} description={pick(locale, NOTICE_META.description)}>
+  <NoticeMain />
 </Layout>

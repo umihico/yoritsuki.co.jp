@@ -11,6 +11,13 @@ import { SITE_URL } from './src/lib/site.js';
 export default defineConfig({
   site: SITE_URL,
   trailingSlash: 'ignore',
+  // 言語別URL（/ = 日本語, /en/ = 英語）。prefixDefaultLocale:false で日本語は無印のまま。
+  // 各ページは単一言語で描画し、Astro.currentLocale から現在言語を取得する。
+  i18n: {
+    defaultLocale: 'ja',
+    locales: ['ja', 'en'],
+    routing: { prefixDefaultLocale: false },
+  },
   build: {
     format: 'directory',
     inlineStylesheets: 'always',

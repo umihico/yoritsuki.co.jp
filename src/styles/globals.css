@@ -34,11 +34,10 @@
   --shadow: 0 12px 32px rgba(29, 43, 66, 0.10);
 }
 
-/* ============ Language switching ============ */
-/* Default (and no-JS) shows Japanese only */
-:root[data-lang="ja"] .en { display: none; }
-:root[data-lang="en"] .ja { display: none; }
-:root[data-lang="en"] body { line-height: 1.7; }
+/* ============ Language ============ */
+/* 言語はURLで確定（/ = ja, /en/ = en）。二言語同梱のCSS切替は廃止。
+   英語は行間をわずかに詰める（<html lang="en"> に対して適用）。 */
+:root[lang="en"] body { line-height: 1.7; }
 
 /* ============ Base ============ */
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -126,7 +125,9 @@ a { color: inherit; }
   overflow: hidden;
   background: var(--panel);
 }
-.toggles button {
+/* 言語トグルは <a>（no-JSでも遷移可）、テーマトグルは <button>。両者を同じ見た目に揃える。 */
+.toggles button,
+.toggles .lang-btn {
   appearance: none;
   border: 0;
   background: transparent;
@@ -139,18 +140,21 @@ a { color: inherit; }
   cursor: pointer;
   font-size: 14px;
   line-height: 1;
+  text-decoration: none;
   transition: background 0.2s, opacity 0.2s, color 0.2s;
 }
-.toggles button + button { border-left: 1px solid var(--border); }
-.toggles button:hover { background: var(--chip-bg); }
+.toggles > * + * { border-left: 1px solid var(--border); }
+.toggles button:hover,
+.toggles .lang-btn:hover { background: var(--chip-bg); }
 .lang-btn { font-size: 11px; color: var(--accent); }
 /* icon swap（言語ボタンと同じく「切替先」を表示: ダーク中→☀️ / ライト中→🌙） */
 .theme-toggle .icon-moon { display: none; }
 .theme-toggle .icon-sun { display: block; }
 [data-theme="light"] .theme-toggle .icon-moon { display: block; }
 [data-theme="light"] .theme-toggle .icon-sun { display: none; }
-/* JS無効時はトグル非表示（動かないUIを出さない） */
-.no-js .toggles { display: none; }
+/* JS無効時はテーマ切替のみ非表示（動かないUIを出さない）。
+   言語トグルは <a> なのでJS無しでも遷移でき、そのまま残す。 */
+.no-js .theme-toggle { display: none; }
 
 /* ============ Hero ============ */
 .hero { padding: 168px 0 96px; }

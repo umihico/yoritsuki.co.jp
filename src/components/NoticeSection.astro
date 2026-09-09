@@ -2,14 +2,16 @@
 import { NOTICE_SECTION } from '../lib/content.js';
 import SectionHead from './SectionHead.astro';
 import T from './T.astro';
+import { getLocale, localizedHref } from '../lib/i18n.js';
 // トップページの公告セクション。本文は専用ページ（/publicnotice/）への案内のみ。
+const locale = getLocale(Astro);
 ---
 <section id="notice">
   <div class="wrap">
     <SectionHead ja="公告" en="Public Notice" />
     <div class="notice-box" data-reveal>
       <p><T ja={NOTICE_SECTION.body.ja} en={NOTICE_SECTION.body.en} /></p>
-      <a class="notice-link" href="/publicnotice/"><T ja={NOTICE_SECTION.link.ja} en={NOTICE_SECTION.link.en} /><span aria-hidden="true">→</span></a>
+      <a class="notice-link" href={localizedHref(locale, '/publicnotice/')}><T ja={NOTICE_SECTION.link.ja} en={NOTICE_SECTION.link.en} /><span aria-hidden="true">→</span></a>
     </div>
   </div>
 </section>

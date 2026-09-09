@@ -1,0 +1,11 @@
+---
+// 公告ページの本文構成。ja版(/publicnotice/)・en版(/en/publicnotice/)が共用する。
+import NoticeCard from './NoticeCard.astro';
+import SectionHead from './SectionHead.astro';
+---
+<main class="notice-main">
+  <div class="wrap">
+    <SectionHead ja="公告" en="Public Notice" />
+    <NoticeCard />
+  </div>
+</main>

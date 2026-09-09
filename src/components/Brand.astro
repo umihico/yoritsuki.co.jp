@@ -1,9 +1,11 @@
 ---
-// ブランドロックアップ（2段）。表示言語側が上段、もう一方が下段に入れ替わる。
+// ブランドロックアップ（2段）。上段=現在言語、下段=反対言語。
+import { getLocale } from '../lib/i18n.js';
+const KANA = 'ヨリツキ';
+const ROMAN = 'YORITSUKI';
+const locale = getLocale(Astro);
+const top = locale === 'en' ? ROMAN : KANA;
+const bottom = locale === 'en' ? KANA : ROMAN;
 ---
-<div class="name">
-  <span class="ja">ヨリツキ</span><span class="en">YORITSUKI</span>
-</div>
-<div class="roman mono">
-  <span class="ja">YORITSUKI</span><span class="en">ヨリツキ</span>
-</div>
+<div class="name">{top}</div>
+<div class="roman mono">{bottom}</div>

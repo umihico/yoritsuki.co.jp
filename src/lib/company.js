@@ -10,6 +10,8 @@ export const COMPANY = {
   shortName: 'ヨリツキ',
   description:
     '株式会社ヨリツキは、Web・アプリ・業務システムの企画から運用まで一気通貫で手がける開発会社です。',
+  descriptionEn:
+    'Yoritsuki, Inc. is a software company that handles web services, apps, and business systems end to end — from planning and development through operations.',
   founder: { ja: '岩佐 海彦', en: 'Umihiko Iwasa' },
   // date: JSON-LD用のISO表記 / ja・en: 会社概要テーブル用の表示表記（同一事実の別フォーマット）
   founding: { date: '2026-08', ja: '2026年8月', en: 'August 2026' },
@@ -31,6 +33,19 @@ export const ADDRESS_JA = `〒${COMPANY.address.postalCode} ${COMPANY.address.re
 
 // 既定タイトル（トップページ）: 「和文社名 | 英文社名」
 export const TITLE_DEFAULT = `${COMPANY.name.ja} | ${COMPANY.name.en}`;
+
+// ページ別メタ（言語別URL用）。title/description は各ページが現ロケールで選ぶ。
+export const HOME_META = {
+  title: { ja: TITLE_DEFAULT, en: `${COMPANY.name.en} | Software Engineering` },
+  description: { ja: COMPANY.description, en: COMPANY.descriptionEn },
+};
+export const NOTICE_META = {
+  title: { ja: `公告 | ${COMPANY.name.ja}`, en: `Public Notice | ${COMPANY.name.en}` },
+  description: {
+    ja: `${COMPANY.name.ja}の電子公告ページです。`,
+    en: `Electronic public notices of ${COMPANY.name.en}.`,
+  },
+};
 
 // 国税庁 法人番号公表サイトの当社ページ
 export const CORPORATE_NUMBER_URL = `https://www.houjin-bangou.nta.go.jp/henkorireki-johoto.html?selHouzinNo=${COMPANY.corporateNumber}`;

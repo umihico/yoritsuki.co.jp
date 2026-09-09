@@ -1,13 +1,15 @@
 ---
 import { HERO } from '../lib/content.js';
 import T from './T.astro';
+import { getLocale } from '../lib/i18n.js';
+const locale = getLocale(Astro);
+const title = locale === 'en' ? HERO.title.en : HERO.title.ja;
 ---
 <section class="hero" id="hero">
   <div class="wrap">
     <p class="eyebrow mono">{HERO.eyebrow}</p>
     <h1>
-      <span class="ja">{HERO.title.ja[0]}<br /><span class="grad">{HERO.title.ja[1]}</span></span>
-      <span class="en">{HERO.title.en[0]}<br /><span class="grad">{HERO.title.en[1]}</span></span>
+      <span>{title[0]}<br /><span class="grad">{title[1]}</span></span>
     </h1>
     <div class="decls">
       {HERO.declarations.map((d, i) => (

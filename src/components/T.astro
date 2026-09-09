@@ -1,5 +1,8 @@
 ---
-// 二言語テキスト。表示側の出し分けは CSS（:root[data-lang] .ja/.en）が担う。
+// 二言語テキストの表示。言語別URLのため、現在ロケールの文字列だけを出力する。
+// （旧: ja/en 双方をspanで出力しCSSで切替 → スニペット汚染の原因だったため廃止）
+import { getLocale, pick } from '../lib/i18n.js';
 const { ja, en } = Astro.props;
+const text = pick(getLocale(Astro), { ja, en });
 ---
-<span class="ja">{ja}</span><span class="en">{en}</span>
+{text}
