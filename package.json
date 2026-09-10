@@ -4,8 +4,9 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
-    "build:local": "PUBLIC_SITE_URL=http://localhost:8642 astro build",
+    "build": "astro build && node scripts/check-unused-css.mjs",
+    "build:local": "PUBLIC_SITE_URL=http://localhost:8642 astro build && node scripts/check-unused-css.mjs",
+    "check:css": "node scripts/check-unused-css.mjs",
     "preview": "astro preview"
   },
   "dependencies": {
