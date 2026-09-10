@@ -1,12 +1,6 @@
 ---
-// ブランドロックアップ（2段）。上段=現在言語、下段=反対言語。
-// もう一方の言語を <template> に不活性同梱し、無遷移トグルで入替える。
-import { getLocale } from '../lib/i18n.js';
-const KANA = 'ヨリツキ';
-const ROMAN = 'YORITSUKI';
-const locale = getLocale(Astro);
-const top = locale === 'en' ? ROMAN : KANA;
-const bottom = locale === 'en' ? KANA : ROMAN;
+// ブランドロックアップ（2段）。上段=現在言語、下段=反対言語（Tの引数入替で表現）。
+import T from './T.astro';
 ---
-<div class="name"><span data-i18n>{top}</span><template data-i18n-alt>{bottom}</template></div>
-<div class="roman mono"><span data-i18n>{bottom}</span><template data-i18n-alt>{top}</template></div>
+<div class="name"><T ja="ヨリツキ" en="YORITSUKI" /></div>
+<div class="roman mono"><T ja="YORITSUKI" en="ヨリツキ" /></div>

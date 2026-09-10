@@ -152,9 +152,9 @@ a { color: inherit; }
 .theme-toggle .icon-sun { display: block; }
 [data-theme="light"] .theme-toggle .icon-moon { display: block; }
 [data-theme="light"] .theme-toggle .icon-sun { display: none; }
-/* JS無効時はテーマ切替のみ非表示（動かないUIを出さない）。
-   言語トグルは <a> なのでJS無しでも遷移でき、そのまま残す。 */
-.no-js .theme-toggle { display: none; }
+/* 言語切替ラッパ（LangSwitch）はレイアウト透明に。インライン/ブロックどちらの
+   内容でも包めるよう display:contents でボックスを生成しない。 */
+.lsw { display: contents; }
 
 /* ============ Hero ============ */
 .hero { padding: 168px 0 96px; }

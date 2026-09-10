@@ -66,16 +66,161 @@ const REDIRECT_SCRIPT = `
 })();
 `;
 
-// テーマをペイント前に復元（FOUC回避）。no-js クラスの除去もここで行う。
-// 言語はURLで確定するため復元しない。
+// テーマをペイント前に復元（FOUC回避）。言語はURLで確定するため復元しない。
 const BOOT_SCRIPT = `
 (function () {
-  var root = document.documentElement;
-  root.classList.remove('no-js');
   try {
     var t = localStorage.getItem('yoritsuki-theme');
-    if (t) root.setAttribute('data-theme', t);
+    if (t) document.documentElement.setAttribute('data-theme', t);
   } catch (e) {}
+})();
+`;
+
+// インタラクションJSは全てこの is:inline に同梱する（外部ファイル・追加フェッチ無し）。
+//  (1) reveal-on-scroll  (2) ナビの現在地ハイライト  (3) 言語・テーマ切替
+// 言語トグルは <a href> のままなのでJS無効時は通常遷移にフォールバック。
+// ※規模が小さく(gzip数KB)、外部化の利得より単純さ・即時性・堅牢さを優先した判断。
+const INTERACTIVE_SCRIPT = `
+(function () {
+  // ---- reveal-on-scroll（表示中の要素は触らないため遅延でもチラつかない） ----
+  (function () {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) return;
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) { entry.target.classList.add('reveal-in'); io.unobserve(entry.target); }
+      });
+    }, { rootMargin: '0px 0px -8% 0px' });
+    document.querySelectorAll('[data-reveal]').forEach(function (el) {
+      if (el.getBoundingClientRect().top > window.innerHeight) { el.classList.add('reveal-pending'); io.observe(el); }
+    });
+  })();
+
+  // ---- スライダー型ナビ（現在地ハイライト） ----
+  (function () {
+    var nav = document.querySelector('.site-nav');
+    if (!nav) return;
+    var indicator = nav.querySelector('.nav-indicator');
+    var links = Array.prototype.slice.call(nav.querySelectorAll('a'));
+    // 論理パス化: 先頭 /en を除去して言語非依存に比較（無遷移トグルでhrefが変わるため）
+    var norm = function (href) {
+      href = href || '/';
+      if (href === '/en') return '/';
+      if (href.indexOf('/en/') === 0) return href.slice(3);
+      return href;
+    };
+    var SPY = [
+      { id: 'capabilities', href: '/#capabilities' },
+      { id: 'company', href: '/#company' },
+      { id: 'contact', href: '/#contact' },
+      { id: 'notice', href: '/publicnotice/' }
+    ];
+    var intent = null;
+    var measure = function () {
+      var link = nav.querySelector('a.active');
+      if (!link) { indicator.style.opacity = '0'; return; }
+      indicator.style.left = link.offsetLeft + 'px';
+      indicator.style.width = link.offsetWidth + 'px';
+      indicator.style.opacity = '1';
+    };
+    var setActive = function (href) {
+      links.forEach(function (a) {
+        var on = norm(a.getAttribute('href')) === href;
+        a.classList.toggle('active', on);
+        if (on) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current');
+      });
+      measure();
+    };
+    var path = window.location.pathname;
+    if (path.indexOf('/publicnotice') === 0 || path.indexOf('/en/publicnotice') === 0) {
+      setActive('/publicnotice/');
+      window.addEventListener('resize', measure);
+      document.addEventListener('i18n:changed', measure);
+      return;
+    }
+    var els = SPY.map(function (s) { return { id: s.id, href: s.href, el: document.getElementById(s.id) }; })
+                 .filter(function (s) { return s.el; });
+    if (!els.length) { window.addEventListener('resize', measure); return; }
+    var raf = 0;
+    var update = function () {
+      raf = 0;
+      if (intent) { setActive(intent); return; }
+      var line = window.innerHeight * 0.4;
+      var current = null;
+      for (var i = 0; i < els.length; i++) { if (els[i].el.getBoundingClientRect().top <= line) current = els[i].href; }
+      var doc = document.documentElement;
+      if (window.innerHeight + window.scrollY >= doc.scrollHeight - 2) current = els[els.length - 1].href;
+      setActive(current);
+    };
+    var onScroll = function () { if (!raf) raf = requestAnimationFrame(update); };
+    var applyHashIntent = function () {
+      var href = '/' + window.location.hash;
+      if (SPY.some(function (s) { return s.href === href; })) { intent = href; setActive(href); }
+    };
+    var clearIntent = function () { if (!intent) return; intent = null; onScroll(); };
+    if (window.location.hash) applyHashIntent();
+    update();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    window.addEventListener('resize', measure);
+    window.addEventListener('hashchange', applyHashIntent);
+    window.addEventListener('wheel', clearIntent, { passive: true });
+    window.addEventListener('touchstart', clearIntent, { passive: true });
+    window.addEventListener('keydown', clearIntent);
+    window.addEventListener('mousedown', clearIntent);
+    document.addEventListener('i18n:changed', function () { measure(); });
+  })();
+
+  // ---- 言語・テーマ切替（全てインライン＝追加の外部DLなし・即時動作） ----
+  (function () {
+    var root = document.documentElement;
+    function applyLang(target) {
+      if (target !== 'ja' && target !== 'en') return;
+      var langLink = document.querySelector('.lang-btn');
+      // 本文テキスト: .lsw（ライブ）⇄ 直後の <template data-lsa> を入替え
+      document.querySelectorAll('.lsw').forEach(function (el) {
+        var tpl = el.nextElementSibling;
+        if (!tpl || tpl.tagName !== 'TEMPLATE' || !tpl.hasAttribute('data-lsa')) return;
+        var keep = el.innerHTML; el.innerHTML = tpl.innerHTML; tpl.innerHTML = keep;
+      });
+      // 言語依存の内部リンク(href)
+      document.querySelectorAll('[data-href-ja][data-href-en]').forEach(function (a) {
+        var h = a.getAttribute('data-href-' + target); if (h != null) a.setAttribute('href', h);
+      });
+      // html lang / title / description / canonical / og / URL
+      root.setAttribute('lang', target);
+      var ti = root.getAttribute('data-title-' + target); if (ti) document.title = ti;
+      var de = root.getAttribute('data-desc-' + target);
+      var dm = document.querySelector('meta[name="description"]'); if (de && dm) dm.setAttribute('content', de);
+      var url = root.getAttribute('data-url-' + target);
+      if (url) {
+        history.replaceState(history.state, '', url + location.hash);
+        var absUrl = location.origin + url;
+        var c = document.querySelector('link[rel="canonical"]'); if (c) c.setAttribute('href', absUrl);
+        var ou = document.querySelector('meta[property="og:url"]'); if (ou) ou.setAttribute('content', absUrl);
+      }
+      var ol = document.querySelector('meta[property="og:locale"]'); if (ol) ol.setAttribute('content', target === 'en' ? 'en_US' : 'ja_JP');
+      var ola = document.querySelector('meta[property="og:locale:alternate"]'); if (ola) ola.setAttribute('content', target === 'en' ? 'ja_JP' : 'en_US');
+      try { document.cookie = 'yoritsuki-lang=' + target + '; path=/; max-age=31536000; samesite=lax'; } catch (e) {}
+      if (langLink) {
+        var back = target === 'en' ? 'ja' : 'en';
+        langLink.setAttribute('data-lang-target', back);
+        var backUrl = root.getAttribute('data-url-' + back); if (backUrl) langLink.setAttribute('href', backUrl);
+        langLink.textContent = back === 'en' ? 'EN' : 'JA';
+        langLink.setAttribute('aria-label', back === 'en' ? 'Switch to English' : '日本語に切り替え');
+      }
+      document.dispatchEvent(new CustomEvent('i18n:changed', { detail: { lang: target } }));
+    }
+    var lang = document.querySelector('.lang-btn');
+    if (lang) lang.addEventListener('click', function (e) { e.preventDefault(); applyLang(lang.getAttribute('data-lang-target')); });
+    var theme = document.querySelector('.theme-toggle');
+    if (theme) theme.addEventListener('click', function () {
+      var next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+      root.setAttribute('data-theme', next);
+      var scheme = document.querySelector('meta[name="color-scheme"]'); if (scheme) scheme.setAttribute('content', next);
+      var tc = document.querySelector('meta[name="theme-color"]'); if (tc) tc.setAttribute('content', next === 'light' ? '#f4f7fb' : '#0b1020');
+      try { localStorage.setItem('yoritsuki-theme', next); } catch (e) {}
+    });
+  })();
 })();
 `;
 ---
@@ -84,7 +229,6 @@ const BOOT_SCRIPT = `
 <html
   lang={locale}
   data-theme="dark"
-  class="no-js"
   data-title-ja={titlePair.ja}
   data-title-en={titlePair.en}
   data-desc-ja={descPair.ja}
@@ -138,218 +282,6 @@ const BOOT_SCRIPT = `
     <Header />
     <slot />
     <Footer />
-    <script>
-      // ============ reveal-on-scroll ============
-      // 初期状態は常に表示（no-JSセーフ）。JSが動く環境でのみ、ビューポート外の要素を隠して
-      // スクロールで表示する。
-      (() => {
-        const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        if (reduced || !('IntersectionObserver' in window)) return;
-        const io = new IntersectionObserver(
-          (entries) => {
-            entries.forEach((entry) => {
-              if (entry.isIntersecting) {
-                entry.target.classList.add('reveal-in');
-                io.unobserve(entry.target);
-              }
-            });
-          },
-          { rootMargin: '0px 0px -8% 0px' }
-        );
-        document.querySelectorAll('[data-reveal]').forEach((el) => {
-          if (el.getBoundingClientRect().top > window.innerHeight) {
-            el.classList.add('reveal-pending');
-            io.observe(el);
-          }
-        });
-      })();
-
-      // ============ 無遷移の言語切替（DOM差替え + history.replaceState） ============
-      // 初期HTMLは単一言語（もう一方は <template data-i18n-alt> に不活性同梱＝非索引）。
-      // トグルはページ遷移せず、[data-i18n] とその直後の <template> の中身を入替えて
-      // 言語を差し替え、URL・lang・title 等だけ書き換える。スクロールは保持される。
-      // JS無効時は <a href> のまま通常遷移するフォールバックが効く。
-      (() => {
-        const root = document.documentElement;
-        const langLink = document.querySelector('.lang-btn');
-        if (langLink) {
-          const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
-
-          const applyLang = (target) => {
-            // 1) 本文テキスト: [data-i18n] ⇄ 直後の <template data-i18n-alt> を入替え
-            document.querySelectorAll('[data-i18n]').forEach((el) => {
-              const tpl = el.nextElementSibling;
-              if (!tpl || tpl.tagName !== 'TEMPLATE' || !tpl.hasAttribute('data-i18n-alt')) return;
-              const keep = el.innerHTML;
-              el.innerHTML = tpl.innerHTML;
-              tpl.innerHTML = keep;
-            });
-            // 2) 言語依存の内部リンク(href)を対象言語へ
-            document.querySelectorAll('[data-href-ja][data-href-en]').forEach((a) => {
-              const h = a.getAttribute('data-href-' + target);
-              if (h != null) a.setAttribute('href', h);
-            });
-            // 3) html lang / title / description / og / canonical
-            root.setAttribute('lang', target);
-            const ti = root.getAttribute('data-title-' + target);
-            if (ti) document.title = ti;
-            const de = root.getAttribute('data-desc-' + target);
-            const dm = document.querySelector('meta[name="description"]');
-            if (de && dm) dm.setAttribute('content', de);
-            const url = root.getAttribute('data-url-' + target);
-            if (url) {
-              history.replaceState(history.state, '', url + location.hash);
-              const absUrl = location.origin + url;
-              const c = document.querySelector('link[rel="canonical"]');
-              if (c) c.setAttribute('href', absUrl);
-              const ou = document.querySelector('meta[property="og:url"]');
-              if (ou) ou.setAttribute('content', absUrl);
-            }
-            const ol = document.querySelector('meta[property="og:locale"]');
-            if (ol) ol.setAttribute('content', target === 'en' ? 'en_US' : 'ja_JP');
-            const ola = document.querySelector('meta[property="og:locale:alternate"]');
-            if (ola) ola.setAttribute('content', target === 'en' ? 'ja_JP' : 'en_US');
-            // 4) 記憶（次回の直接訪問時のリダイレクト判定に使う）
-            try { document.cookie = `yoritsuki-lang=${target}; path=/; max-age=31536000; samesite=lax`; } catch (e) {}
-            // 5) トグル自身を「反対言語」に更新
-            const back = target === 'en' ? 'ja' : 'en';
-            langLink.setAttribute('data-lang-target', back);
-            const backUrl = root.getAttribute('data-url-' + back);
-            if (backUrl) langLink.setAttribute('href', backUrl);
-            langLink.textContent = back === 'en' ? 'EN' : 'JA';
-            langLink.setAttribute('aria-label', back === 'en' ? 'Switch to English' : '日本語に切り替え');
-            // 6) 依存UI（ナビのハイライト等）へ通知
-            document.dispatchEvent(new CustomEvent('i18n:changed', { detail: { lang: target } }));
-          };
-
-          langLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            applyLang(langLink.getAttribute('data-lang-target'));
-          });
-        }
-
-        const themeBtn = document.querySelector('.theme-toggle');
-        if (themeBtn) {
-          const applyTheme = (theme) => {
-            root.setAttribute('data-theme', theme);
-            const scheme = document.querySelector('meta[name="color-scheme"]');
-            if (scheme) scheme.setAttribute('content', theme);
-            const themeColor = document.querySelector('meta[name="theme-color"]');
-            if (themeColor) themeColor.setAttribute('content', theme === 'light' ? '#f4f7fb' : '#0b1020');
-          };
-          themeBtn.addEventListener('click', () => {
-            const next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-            applyTheme(next);
-            try { localStorage.setItem('yoritsuki-theme', next); } catch {}
-          });
-        }
-      })();
-
-      // ============ スライダー型ナビ（現在地ハイライト） ============
-      (() => {
-        const nav = document.querySelector('.site-nav');
-        if (!nav) return;
-        const indicator = nav.querySelector('.nav-indicator');
-        const links = Array.from(nav.querySelectorAll('a'));
-
-        // 言語切替(無遷移)でナビhrefの /en 接頭辞が変わるため、比較は論理パス
-        // （先頭の /en を除去した形）で行い、言語非依存でハイライトを維持する。
-        const norm = (href) => (href || '').replace(/^\/en(?=\/|$)/, '') || '/';
-        const SPY_SECTIONS = [
-          { id: 'capabilities', href: '/#capabilities' },
-          { id: 'company', href: '/#company' },
-          { id: 'contact', href: '/#contact' },
-          { id: 'notice', href: '/publicnotice/' },
-        ];
-
-        let active = null;
-        let intent = null;
-
-        const measure = () => {
-          const link = nav.querySelector('a.active');
-          if (!link) {
-            indicator.style.opacity = '0';
-            return;
-          }
-          indicator.style.left = link.offsetLeft + 'px';
-          indicator.style.width = link.offsetWidth + 'px';
-          indicator.style.opacity = '1';
-        };
-        const setActive = (href) => {
-          active = href;
-          links.forEach((a) => {
-            const on = norm(a.getAttribute('href')) === href;
-            a.classList.toggle('active', on);
-            if (on) a.setAttribute('aria-current', 'true');
-            else a.removeAttribute('aria-current');
-          });
-          measure();
-        };
-
-        // 公告専用ページ（ja/en）ではナビの「公告」を点灯させる
-        if (/^\/(en\/)?publicnotice/.test(window.location.pathname)) {
-          setActive('/publicnotice/');
-          window.addEventListener('resize', measure);
-          document.addEventListener('i18n:changed', measure);
-          return;
-        }
-
-        const els = SPY_SECTIONS
-          .map((s) => ({ ...s, el: document.getElementById(s.id) }))
-          .filter((s) => s.el);
-        if (!els.length) {
-          window.addEventListener('resize', measure);
-          return;
-        }
-
-        let raf = 0;
-        const update = () => {
-          raf = 0;
-          if (intent) {
-            setActive(intent);
-            return;
-          }
-          const line = window.innerHeight * 0.4;
-          let current = null;
-          for (const s of els) {
-            if (s.el.getBoundingClientRect().top <= line) current = s.href;
-          }
-          const doc = document.documentElement;
-          if (window.innerHeight + window.scrollY >= doc.scrollHeight - 2) {
-            current = els[els.length - 1].href;
-          }
-          setActive(current);
-        };
-        const onScroll = () => {
-          if (!raf) raf = requestAnimationFrame(update);
-        };
-
-        const applyHashIntent = () => {
-          const href = '/' + window.location.hash;
-          if (SPY_SECTIONS.some((s) => s.href === href)) {
-            intent = href;
-            setActive(href);
-          }
-        };
-        const clearIntent = () => {
-          if (!intent) return;
-          intent = null;
-          onScroll();
-        };
-
-        if (window.location.hash) applyHashIntent();
-        update();
-        window.addEventListener('scroll', onScroll, { passive: true });
-        window.addEventListener('resize', onScroll);
-        window.addEventListener('resize', measure);
-        window.addEventListener('hashchange', applyHashIntent);
-        window.addEventListener('wheel', clearIntent, { passive: true });
-        window.addEventListener('touchstart', clearIntent, { passive: true });
-        window.addEventListener('keydown', clearIntent);
-        window.addEventListener('mousedown', clearIntent);
-        // 言語切替(無遷移)後はhrefやラベル幅が変わるため、位置を測り直す
-        document.addEventListener('i18n:changed', () => { measure(); });
-      })();
-    </script>
+    <script is:inline set:html={INTERACTIVE_SCRIPT} />
   </body>
 </html>

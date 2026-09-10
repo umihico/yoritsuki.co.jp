@@ -1,11 +1,7 @@
 ---
-// 二言語テキスト。現在ロケールをライブ描画し、もう一方を <template> に不活性同梱する。
-// 初期HTMLの本文は単一言語＝クローラは片方のみ索引。無遷移トグル時に Layout の
-// スクリプトが [data-i18n] と直後の <template> の中身を入替えて言語を差し替える。
-import { getLocale } from '../lib/i18n.js';
+// プレーン二言語テキスト用の薄いラッパ。<T ja="…" en="…" /> で呼ぶ。
+// 実体は LangSwitch（分岐ロジックはそちらに1回だけ存在）。
+import LangSwitch from './LangSwitch.astro';
 const { ja, en } = Astro.props;
-const locale = getLocale(Astro);
-const cur = locale === 'en' ? en : ja;
-const alt = locale === 'en' ? ja : en;
 ---
-<span data-i18n>{cur}</span><template data-i18n-alt>{alt}</template>
+<LangSwitch><Fragment slot="ja">{ja}</Fragment><Fragment slot="en">{en}</Fragment></LangSwitch>

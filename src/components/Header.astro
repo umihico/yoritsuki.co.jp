@@ -1,11 +1,11 @@
 ---
 import Brand from './Brand.astro';
+import T from './T.astro';
 import { COMPANY } from '../lib/company.js';
 import { NAV_ITEMS } from '../lib/content.js';
-import { getLocale, pick, localizedHref, alternatePaths } from '../lib/i18n.js';
+import { getLocale, localizedHref, alternatePaths } from '../lib/i18n.js';
 
 const locale = getLocale(Astro);
-const alt = locale === 'en' ? 'ja' : 'en';
 const paths = alternatePaths(Astro.url.pathname);
 // 言語トグル: 反対言語のURL（no-JS時は通常遷移）。JSありなら無遷移でDOM差替え。
 const other = locale === 'en' ? 'ja' : 'en';
@@ -24,7 +24,7 @@ const brandLabel = locale === 'en' ? `${COMPANY.name.en} home` : `${COMPANY.name
         <span class="nav-indicator" aria-hidden="true" style="left:0;width:0;opacity:0"></span>
         {NAV_ITEMS.map((item) => (
           <a href={localizedHref(locale, item.href)} data-href-ja={item.href} data-href-en={localizedHref('en', item.href)}>
-            <span data-i18n>{pick(locale, item)}</span><template data-i18n-alt>{pick(alt, item)}</template>
+            <T ja={item.ja} en={item.en} />
           </a>
         ))}
       </nav>

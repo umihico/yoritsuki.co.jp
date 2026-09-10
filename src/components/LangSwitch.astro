@@ -1,0 +1,20 @@
+---
+// 二言語切替の唯一の実装箇所。現在ロケール側の slot をライブ描画し、もう一方を
+// <template>（不活性＝クローラ非索引）に格納する。無遷移トグル時に Layout の
+// スクリプトが .lsw の innerHTML を隣の <template> と入れ替えて言語を切替える。
+//
+// 使い方:
+//   <LangSwitch>
+//     <Fragment slot="ja">日本語のマークアップ</Fragment>
+//     <Fragment slot="en">English markup</Fragment>
+//   </LangSwitch>
+// プレーン文字列は T.astro（このコンポーネントの薄いラッパ）を使う。
+// ※入れ子にしない（トグルは .lsw をフラットに走査するため）。
+import { getLocale } from '../lib/i18n.js';
+const en = getLocale(Astro) === 'en';
+---
+{en ? (
+  <><span class="lsw"><slot name="en" /></span><template data-lsa><slot name="ja" /></template></>
+) : (
+  <><span class="lsw"><slot name="ja" /></span><template data-lsa><slot name="en" /></template></>
+)}

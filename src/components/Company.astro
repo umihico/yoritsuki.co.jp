@@ -2,10 +2,8 @@
 import { COMPANY_ROWS } from '../lib/content.js';
 import SectionHead from './SectionHead.astro';
 import CompanyDd from './CompanyDd.astro';
-import { getLocale, pick } from '../lib/i18n.js';
-
-const locale = getLocale(Astro);
-const alt = locale === 'en' ? 'ja' : 'en';
+import T from './T.astro';
+import LangSwitch from './LangSwitch.astro';
 ---
 <section id="company">
   <div class="wrap">
@@ -13,8 +11,13 @@ const alt = locale === 'en' ? 'ja' : 'en';
     <dl class="company-table" data-reveal>
       {COMPANY_ROWS.map((row) => (
         <div class="company-row">
-          <dt><span data-i18n>{pick(locale, row.label)}</span><template data-i18n-alt>{pick(alt, row.label)}</template></dt>
-          <dd data-i18n><CompanyDd row={row} locale={locale} /></dd><template data-i18n-alt><CompanyDd row={row} locale={alt} /></template>
+          <dt><T ja={row.label.ja} en={row.label.en} /></dt>
+          <dd>
+            <LangSwitch>
+              <Fragment slot="ja"><CompanyDd row={row} locale="ja" /></Fragment>
+              <Fragment slot="en"><CompanyDd row={row} locale="en" /></Fragment>
+            </LangSwitch>
+          </dd>
         </div>
       ))}
     </dl>

@@ -1,16 +1,16 @@
 ---
 import { HERO } from '../lib/content.js';
 import T from './T.astro';
-import { getLocale } from '../lib/i18n.js';
-const locale = getLocale(Astro);
-const cur = locale === 'en' ? HERO.title.en : HERO.title.ja;
-const alt = locale === 'en' ? HERO.title.ja : HERO.title.en;
+import LangSwitch from './LangSwitch.astro';
 ---
 <section class="hero" id="hero">
   <div class="wrap">
     <p class="eyebrow mono">{HERO.eyebrow}</p>
     <h1>
-      <span data-i18n>{cur[0]}<br /><span class="grad">{cur[1]}</span></span><template data-i18n-alt>{alt[0]}<br /><span class="grad">{alt[1]}</span></template>
+      <LangSwitch>
+        <Fragment slot="ja">{HERO.title.ja[0]}<br /><span class="grad">{HERO.title.ja[1]}</span></Fragment>
+        <Fragment slot="en">{HERO.title.en[0]}<br /><span class="grad">{HERO.title.en[1]}</span></Fragment>
+      </LangSwitch>
     </h1>
     <div class="decls">
       {HERO.declarations.map((d, i) => (
