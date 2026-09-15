@@ -11,22 +11,31 @@
     ) {
       return;
     }
+    // 全要素を観測し、初回コールバック（IOは非同期）で可視/非可視を判定する。
+    // 要素ジオメトリの同期読み取り（getBoundingClientRect）を排して強制リフローを回避。
+    // entry.boundingClientRect はIOが算出した値、window.innerHeight はリフロー非誘発の
+    // スカラなので、どちらも同期レイアウトを起こさずに折り返し判定に使える。
     var io = new IntersectionObserver(
       function (entries) {
         entries.forEach(function (entry) {
+          var el = entry.target;
           if (entry.isIntersecting) {
-            entry.target.classList.add("reveal-in");
-            io.unobserve(entry.target);
+            // pending を付けた（=読み込み時に画面外だった）要素だけ演出して見せる
+            if (el.classList.contains("reveal-pending")) el.classList.add("reveal-in");
+            io.unobserve(el);
+          } else if (entry.boundingClientRect.top > window.innerHeight) {
+            // 読み込み時に画面下（フォールド外）：隠してからスクロールインで演出
+            el.classList.add("reveal-pending");
+          } else {
+            // 既に視界内 or 上方へ通過済み：既定表示のまま観測を終了
+            io.unobserve(el);
           }
         });
       },
       { rootMargin: "0px 0px -8% 0px" }
     );
     document.querySelectorAll("[data-reveal]").forEach(function (el) {
-      if (el.getBoundingClientRect().top > window.innerHeight) {
-        el.classList.add("reveal-pending");
-        io.observe(el);
-      }
+      io.observe(el);
     });
   })();
 
