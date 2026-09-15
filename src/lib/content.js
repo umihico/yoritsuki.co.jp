@@ -35,7 +35,7 @@ export const HERO = {
 };
 
 export const FOR_YOU = {
-  label: { ja: 'こんなときに', en: 'WHEN TO TALK TO US' },
+  label: { ja: 'このような場合にご相談ください', en: 'WHEN TO TALK TO US' },
   items: [
     { ja: '新しいWebサービス・アプリを立ち上げたい', en: 'You want to launch a new web service or app' },
     { ja: '社内の業務を整理して、自動化したい', en: 'You want to streamline and automate internal work' },
