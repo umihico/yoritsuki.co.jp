@@ -20,6 +20,8 @@ export const HERO = {
     {
       ja: '同じ目線で事業課題を理解し、お客様の期待を超える提案を目指します。',
       en: 'We work at eye level — understanding your business problems and aiming for proposals that exceed expectations.',
+      // 折り返しが必要なとき、読点「、」の直後を優先改行位置にする（和文のみ）
+      breakAfterPunct: true,
     },
     {
       ja: '技術選定から開発、リリースまでAIを適切に駆使しスピードと品質を両立します。',

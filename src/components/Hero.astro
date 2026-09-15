@@ -2,6 +2,20 @@
 import { HERO } from '../lib/content.js';
 import T from './T.astro';
 import LangSwitch from './LangSwitch.astro';
+
+const esc = (s) =>
+  String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+// 折り返し時、読点「、」の直後だけを優先改行位置にする（各節は nowrap で内部改行を抑止）。
+function breakAfterPunctHTML(text) {
+  const parts = text.split('、');
+  return parts
+    .map((p, i) =>
+      i < parts.length - 1
+        ? `<span class="nowrap">${esc(p)}、</span>`
+        : `<span class="nowrap">${esc(p)}</span>`,
+    )
+    .join('<wbr/>');
+}
 ---
 <section class="hero" id="hero">
   <div class="wrap">
@@ -14,7 +28,14 @@ import LangSwitch from './LangSwitch.astro';
     </h1>
     <div class="decls">
       {HERO.declarations.map((d, i) => (
-        <p><span class="decl-num mono" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span><T ja={d.ja} en={d.en} /></p>
+        <p><span class="decl-num mono" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>{d.breakAfterPunct ? (
+          <LangSwitch>
+            <Fragment slot="ja"><span set:html={breakAfterPunctHTML(d.ja)} /></Fragment>
+            <Fragment slot="en">{d.en}</Fragment>
+          </LangSwitch>
+        ) : (
+          <T ja={d.ja} en={d.en} />
+        )}</p>
       ))}
     </div>
   </div>
