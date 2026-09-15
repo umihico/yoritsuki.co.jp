@@ -56,19 +56,19 @@ export const CAPABILITIES = [
     },
   },
   {
-    glyph: 'product',
-    title: { ja: 'Webサービスの企画・開発・運営', en: 'Web Services — Planning, Development & Operation' },
-    body: {
-      ja: '受託開発で培った技術と知見を活かし、サービスの企画・開発にも取り組んでいます。詳細は準備が整い次第、本サイトでお知らせします。',
-      en: 'Applying the expertise gained through client work, we also plan, build, and operate services of our own. Details will be announced here once ready.',
-    },
-  },
-  {
     glyph: 'server',
     title: { ja: 'サーバー運用・保守', en: 'Managed Infrastructure Services' },
     body: {
       ja: '当社開発以外のシステムも含め、サーバーの監視・保守・障害対応を代行し、セキュリティ強化やコスト最適化までご提案します。開発元を問わず、現状の構成のままご相談ください。',
       en: 'We take over server monitoring, maintenance, and incident response — including systems we didn’t build — with proposals for security hardening and cost optimization. Bring it as it is, whoever developed it.',
+    },
+  },
+  {
+    glyph: 'algo',
+    title: { ja: 'アルゴリズム取引', en: 'Algorithmic Trading' },
+    body: {
+      ja: '自社で研究開発したアルゴリズムを用いて、国内株式の自己勘定取引を行っています。',
+      en: 'Using algorithms researched and developed in-house, we conduct proprietary trading of Japanese equities.',
     },
   },
 ];
