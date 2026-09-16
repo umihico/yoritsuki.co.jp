@@ -214,34 +214,10 @@ section { padding: 88px 0; }
 h2 { font-size: clamp(24px, 3vw, 32px); color: var(--text-strong); font-weight: 700; }
 .section-en { font-size: 12.5px; color: var(--accent); letter-spacing: 0.18em; }
 
-/* For-you strip */
-.for-you {
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  background: var(--panel);
-  padding: 28px 32px;
-}
-.for-you .fy-label { font-size: 13px; color: var(--accent); margin-bottom: 14px; }
-.for-you ul { list-style: none; display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px 32px; }
-.for-you li {
-  font-size: 14px;
-  color: var(--text);
-  padding-left: 1.4em;
-  position: relative;
-}
-.for-you li::before {
-  content: "→";
-  position: absolute;
-  left: 0;
-  color: var(--accent-strong);
-  font-family: ui-monospace, Menlo, monospace;
-}
-.for-you .fy-note { margin-top: 16px; font-size: 12.5px; color: var(--muted); }
-
 /* Capability cards */
 .cards {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 28px;
   border: 1px solid var(--border);
   border-radius: 14px;
@@ -354,14 +330,13 @@ h2 { font-size: clamp(24px, 3vw, 32px); color: var(--text-strong); font-weight: 
 /* ============ Typography: 折り返し制御 ============ */
 /* 見出しは行間バランス、本文は孤立行を避ける。日本語は文節単位で折り返す(Chrome) */
 h1, h2 { text-wrap: balance; word-break: auto-phrase; }
-.decls p, .card p, .fy-note, .notice-box p { text-wrap: pretty; word-break: auto-phrase; }
-.for-you li, .company-row dd .main { word-break: auto-phrase; }
+.decls p, .card p, .notice-box p { text-wrap: pretty; word-break: auto-phrase; }
+.company-row dd .main { word-break: auto-phrase; }
 
 /* ============ Responsive ============ */
 @media (max-width: 900px) {
   .hero { padding-top: 140px; }
   .cards { grid-template-columns: 1fr; padding: 28px; }
-  .for-you ul { grid-template-columns: 1fr; }
   .company-row { grid-template-columns: 1fr; gap: 6px; padding: 20px 4px; }
   .site-nav { gap: 16px; }
   .site-nav a { font-size: 13px; }
@@ -389,8 +364,6 @@ h1, h2 { text-wrap: balance; word-break: auto-phrase; }
   section { padding: 64px 0; }
   .section-head { margin-bottom: 36px; }
   .cards { padding: 20px; gap: 20px; }
-  .for-you { padding: 24px 20px; }
-  .for-you ul { gap: 14px; }
   .notice-main { padding: 128px 0 80px; }
   .notice-box { padding: 28px 22px; }
 }

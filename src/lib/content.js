@@ -24,8 +24,8 @@ export const HERO = {
       breakAfterPunct: true,
     },
     {
-      ja: '技術選定から開発、リリースまでAIを適切に駆使しスピードと品質を両立します。',
-      en: 'From tech selection through development and release, we apply AI where it counts — for both speed and quality.',
+      ja: 'AIを安全に活用し、スピードと品質を両立します。',
+      en: 'We use AI safely — for both speed and quality.',
     },
     {
       ja: '運用から機能追加まで末永くお付き合いします。',
@@ -34,43 +34,21 @@ export const HERO = {
   ],
 };
 
-export const FOR_YOU = {
-  label: { ja: 'このような場合にご相談ください', en: 'WHEN TO TALK TO US' },
-  items: [
-    { ja: '新しいWebサービス・アプリを立ち上げたい', en: 'You want to launch a new web service or app' },
-    { ja: '社内の業務を整理して、自動化したい', en: 'You want to streamline and automate internal work' },
-    { ja: '開発から運用まで、一貫して任せたい', en: 'You want one team from development through operations' },
-    { ja: 'インフラの運用負担やコスト、セキュリティを見直したい', en: 'You want to rethink your infrastructure workload, costs, and security' },
-  ],
-  note: {
-    ja: '「まだ要件になっていない」段階のご相談も歓迎です。一緒に言葉にするところから始めます。',
-    en: 'It’s fine if it isn’t a "requirement" yet — we start by putting it into words together.',
-  },
-};
-
 export const CAPABILITIES = [
   {
     glyph: 'web',
-    title: { ja: '受託開発', en: 'Custom Software Development' },
+    title: { ja: 'ソフトウェア開発・技術支援', en: 'Software Development & Technical Support' },
     body: {
-      ja: 'Webサービス・モバイルアプリ・業務システムの企画から設計・開発、業務の自動化やAI導入、リリース後の保守運用まで一貫してお任せいただけます。',
-      en: 'From planning and design of web services, mobile apps, and business systems to automation, AI adoption, and post-release operations — one team, end to end.',
-    },
-  },
-  {
-    glyph: 'server',
-    title: { ja: 'サーバー運用・保守', en: 'Managed Infrastructure Services' },
-    body: {
-      ja: '当社開発以外のシステムも含め、サーバーの監視・保守・障害対応を代行し、セキュリティ強化やコスト最適化までご提案します。開発元を問わず、現状の構成のままご相談ください。',
-      en: 'We take over server monitoring, maintenance, and incident response — including systems we didn’t build — with proposals for security hardening and cost optimization. Bring it as it is, whoever developed it.',
+      ja: 'Webサービス・モバイルアプリ・業務システムを企画から開発、保守運用まで一貫してお任せいただけます。',
+      en: 'Web services, mobile apps, and business systems — one team, end to end, from planning through development and maintenance.',
     },
   },
   {
     glyph: 'algo',
-    title: { ja: 'アルゴリズム取引', en: 'Algorithmic Trading' },
+    title: { ja: '自己勘定取引システムの開発・運用', en: 'Proprietary Trading System Development & Operation' },
     body: {
-      ja: '自社で研究開発したアルゴリズムを用いて、国内株式の自己勘定取引を行っています。',
-      en: 'Using algorithms researched and developed in-house, we conduct proprietary trading of Japanese equities.',
+      ja: '取引戦略の研究と取引システムを開発し、自己資金によるアルゴリズム取引を行っています。',
+      en: 'We research trading strategies and build our own trading systems, conducting algorithmic trading with our own capital.',
     },
   },
 ];
