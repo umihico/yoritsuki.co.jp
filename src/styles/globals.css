@@ -13,7 +13,7 @@
   --accent: #7dd3fc;
   --accent-strong: #38bdf8;
   --chip-bg: rgba(125, 211, 252, 0.08);
-  --header-bg: rgba(11, 16, 32, 0.72);
+  --header-bg: rgba(11, 16, 32, 0.6);
   --shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
 }
 [data-theme="light"] {
@@ -30,7 +30,7 @@
   --accent: #0369a1;
   --accent-strong: #0284c7;
   --chip-bg: rgba(2, 132, 199, 0.08);
-  --header-bg: rgba(244, 247, 251, 0.80);
+  --header-bg: rgba(244, 247, 251, 0.6);
   --shadow: 0 12px 32px rgba(29, 43, 66, 0.10);
 }
 
@@ -75,8 +75,8 @@ a { color: inherit; }
   top: 0; left: 0; right: 0;
   z-index: 50;
   background: var(--header-bg);
-  -webkit-backdrop-filter: blur(14px);
-  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(7px);
+  backdrop-filter: blur(7px);
   border-bottom: 1px solid var(--border);
 }
 .site-header .wrap {
