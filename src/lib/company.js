@@ -9,9 +9,9 @@ export const COMPANY = {
   // ブランド略称（PWA short_name / OGP画像のalt など）
   shortName: 'ヨリツキ',
   description:
-    '株式会社ヨリツキは、Web・アプリ・業務システムの企画から運用まで一気通貫で手がける開発会社です。',
+    '株式会社ヨリツキは、ソフトウェア開発と、アルゴリズム取引の研究・自己勘定運用を行う会社です。',
   descriptionEn:
-    'Yoritsuki, Inc. is a software company that handles web services, apps, and business systems end to end — from planning and development through operations.',
+    'Yoritsuki, Inc. is a company engaged in software development and the research and proprietary trading of algorithmic strategies.',
   founder: { ja: '岩佐 海彦', en: 'Umihiko Iwasa' },
   // date: JSON-LD用のISO表記 / ja・en: 会社概要テーブル用の表示表記（同一事実の別フォーマット）
   founding: { date: '2026-08', ja: '2026年8月', en: 'August 2026' },
