@@ -18,7 +18,7 @@ export const HERO = {
   // 宣言風の3文。1文ずつ改行して表示する
   declarations: [
     {
-      ja: '同じ目線で事業課題を理解し、お客様の期待を超える提案を目指します。',
+      ja: '同じ目線で事業課題を理解し、期待を超える提案を目指します。',
       en: 'We work at eye level — understanding your business problems and aiming for proposals that exceed expectations.',
     },
     {
@@ -26,7 +26,7 @@ export const HERO = {
       en: 'We use AI safely — for both speed and quality.',
     },
     {
-      ja: '運用から機能追加まで末永くお付き合いします。',
+      ja: '企画からリリース以降の保守まで末永くお付き合いします。',
       en: 'And we stay for the long run — from daily operations to new features.',
     },
   ],
@@ -37,7 +37,7 @@ export const CAPABILITIES = [
     glyph: 'web',
     title: { ja: 'ソフトウェア開発・技術支援', en: 'Software Development & Technical Support' },
     body: {
-      ja: 'Webサービス・モバイルアプリ・業務システムを企画から開発、保守運用まで一貫してお任せいただけます。',
+      ja: 'Webサービス・モバイルアプリ・業務システムを、企画から開発・保守運用まで一貫してご支援します。',
       en: 'Web services, mobile apps, and business systems — one team, end to end, from planning through development and maintenance.',
     },
   },
