@@ -13,7 +13,7 @@ const withBreaks = (s) => s.replace(/([、。])(?!$)/g, '$1<wbr>');
     <h1>
       <LangSwitch>
         <Fragment slot="ja">{HERO.title.ja.lead}<br /><span class="grad">{HERO.title.ja.grad}</span></Fragment>
-        <Fragment slot="en">{HERO.title.en.lead}<span class="grad">{HERO.title.en.grad}</span></Fragment>
+        <Fragment slot="en">{HERO.title.en.lead}<wbr /> <span class="nowrap">the <span class="grad">{HERO.title.en.grad}</span></span></Fragment>
       </LangSwitch>
     </h1>
     <p class="lead">

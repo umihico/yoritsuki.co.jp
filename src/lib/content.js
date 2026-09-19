@@ -15,10 +15,12 @@ export const HERO = {
     ja: 'ENGINEERING THE EDGE',
     en: 'BUILT IN-HOUSE · TRADED LIVE',
   },
-  // 見出し。ja=2行（2行目 grad をグラデ着色）。en=1行で "Edge" 語のみ grad 着色。
+  // 見出しは lead / grad の2セグメント。
+  // ja: 常に2行（表示側 <br>／lead 末尾の読点「、」で改行）。PC・SPとも2行を維持。
+  // en: PCは1行、SPのみ折返し（表示側で "Engineering" の後に <wbr>、「the Edge」は .nowrap で一体。grad="Edge"のみ着色）。
   title: {
     ja: { lead: 'テクノロジーで、', grad: 'エッジを実装する。' },
-    en: { lead: 'Engineering the ', grad: 'Edge' },
+    en: { lead: 'Engineering', grad: 'Edge' },
   },
   // ヒーローのリード文は company.js の description を正典として参照（meta と同一定数）
 };
@@ -29,7 +31,7 @@ export const CAPABILITIES = [
     title: { ja: 'トレード戦略の研究', en: 'Trading Strategy Research' },
     body: {
       ja: '過去の市場データを研究・分析し、市場に存在するエッジを発見します。そのうえで、トレード戦略としての採用可否を判断します。',
-      en: 'We research and analyze historical market data to discover edges in the market, then decide whether to adopt them as trading strategies.',
+      en: 'We research and analyze historical data to discover edges in the market, then decide whether to adopt them as trading strategies.',
     },
   },
   {
@@ -45,7 +47,7 @@ export const CAPABILITIES = [
     title: { ja: '自己勘定による運用', en: 'Proprietary Trading' },
     body: {
       ja: '戦略ごとに自己勘定で運用し、実際の運用結果に基づき戦略の改善と、資金配分を最適化します。',
-      en: 'We trade each strategy with our own capital, refining each strategy based on actual live results and optimizing capital allocation.',
+      en: 'We trade each strategy with our own capital, refining it based on live results and optimizing capital allocation.',
     },
   },
 ];
@@ -98,13 +100,13 @@ export const COMPANY_ROWS = [
 export const CONTACT = {
   // 各要素を <br> で改行して1段落に表示する
   body: {
-    ja: ['お問い合わせ窓口は設けておりません。', 'あらかじめご了承ください。'],
-    en: ['We do not provide a contact channel.', 'Thank you for your understanding.'],
+    ja: ['お問い合わせ窓口は設けておりません。', '何卒ご了承ください。'],
+    en: ['We do not offer any means of contact.', 'Thank you for your understanding.'],
   },
   // 本文とのあいだに1行空けて表示する採用に関する補足
   note: {
     ja: 'なお、採用も現在は行っておりません。',
-    en: 'We are also not currently hiring.',
+    en: 'We are not currently hiring, either.',
   },
 };
 

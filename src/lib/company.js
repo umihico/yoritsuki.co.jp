@@ -19,7 +19,7 @@ export const COMPANY = {
   founder: { ja: '岩佐 海彦', en: 'Umihiko Iwasa' },
   // date: JSON-LD用のISO表記 / ja・en: 会社概要テーブル用の表示表記（同一事実の別フォーマット）
   founding: { date: '2026-08', ja: '2026年8月', en: 'August 2026' },
-  capital: { ja: '5,000,000円', en: '5,000,000 yen' },
+  capital: { ja: '5,000,000円', en: '¥5,000,000' },
   corporateNumber: '3010401201309',
   address: {
     postalCode: '107-0061',
@@ -47,7 +47,7 @@ export const NOTICE_META = {
   title: { ja: `公告 | ${COMPANY.name.ja}`, en: `Public Notice | ${COMPANY.name.en}` },
   description: {
     ja: `${COMPANY.name.ja}の電子公告ページです。`,
-    en: `Electronic public notices of ${COMPANY.name.en}.`,
+    en: `The electronic public notice page of ${COMPANY.name.en}.`,
   },
 };
 
