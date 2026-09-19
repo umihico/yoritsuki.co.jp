@@ -10,10 +10,15 @@ export const NAV_ITEMS = [
 ];
 
 export const HERO = {
-  eyebrow: 'ENGINEERING THE EDGE',
+  // eyebrow（小さいkicker）は言語別。ja=ブランドの宣言 / en=具体的事実の2断片を中黒で連結。
+  eyebrow: {
+    ja: 'ENGINEERING THE EDGE',
+    en: 'BUILT IN-HOUSE · TRADED LIVE',
+  },
+  // 見出し。ja=2行（2行目 grad をグラデ着色）。en=1行で "Edge" 語のみ grad 着色。
   title: {
-    ja: ['テクノロジーで、', 'エッジを実装する。'],
-    en: ['Built in-house.', 'Traded live.'],
+    ja: { lead: 'テクノロジーで、', grad: 'エッジを実装する。' },
+    en: { lead: 'Engineering the ', grad: 'Edge' },
   },
   // ヒーローのリード文は company.js の description を正典として参照（meta と同一定数）
 };
@@ -23,7 +28,7 @@ export const CAPABILITIES = [
     glyph: 'research',
     title: { ja: 'トレード戦略の研究', en: 'Trading Strategy Research' },
     body: {
-      ja: '過去の市場データの研究・分析を行い、市場に存在するエッジを発見します。そしてトレード戦略としての採用可否を判断します。',
+      ja: '過去の市場データを研究・分析し、市場に存在するエッジを発見します。そのうえで、トレード戦略としての採用可否を判断します。',
       en: 'We research and analyze historical market data to discover edges in the market, then decide whether to adopt them as trading strategies.',
     },
   },
@@ -31,7 +36,7 @@ export const CAPABILITIES = [
     glyph: 'build',
     title: { ja: 'トレード戦略・注文執行インフラの開発', en: 'Strategy & Execution Systems' },
     body: {
-      ja: 'エッジから利益を得るためのトレード戦略の実装と、注文執行インフラの開発を行います。',
+      ja: 'エッジを利益に変えるトレード戦略を実装し、それを動かす注文執行インフラを開発します。',
       en: 'We implement trading strategies to turn edges into profit, and develop the order execution infrastructure they run on.',
     },
   },
@@ -39,7 +44,7 @@ export const CAPABILITIES = [
     glyph: 'trade',
     title: { ja: '自己勘定による運用', en: 'Proprietary Trading' },
     body: {
-      ja: '戦略毎に自己勘定運用を行い、実際の運用結果に基づく戦略改善や、資金配分の最適化を行います。',
+      ja: '戦略ごとに自己勘定で運用し、実際の運用結果に基づき戦略の改善と、資金配分を最適化します。',
       en: 'We trade each strategy with our own capital, refining each strategy based on actual live results and optimizing capital allocation.',
     },
   },
@@ -117,7 +122,7 @@ export const NOTICE = {
     ja: '現在、掲載すべき公告はありません。電子公告を行う場合は、本ページに掲載します。',
     en: 'There are currently no public notices. Electronic public notices, if any, will be posted on this page.',
   },
-  empty: { ja: '掲載中の公告：0件', en: 'Notices currently posted: 0' },
+  empty: { ja: '掲載中の公告 0件', en: 'Notices currently posted: 0' },
 };
 
 export const COPYRIGHT = COMPANY_COPYRIGHT;

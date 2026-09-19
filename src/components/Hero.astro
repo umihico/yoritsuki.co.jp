@@ -2,17 +2,18 @@
 import { HERO } from '../lib/content.js';
 import { COMPANY } from '../lib/company.js';
 import LangSwitch from './LangSwitch.astro';
+import T from './T.astro';
 
 // リード文のみの例外：読点/句点の直後に<wbr>を入れ、狭幅時に文節境界で改行させる（.leadのkeep-allと併用）。
 const withBreaks = (s) => s.replace(/([、。])(?!$)/g, '$1<wbr>');
 ---
 <section class="hero" id="hero">
   <div class="wrap">
-    <p class="eyebrow mono">{HERO.eyebrow}</p>
+    <p class="eyebrow mono"><T ja={HERO.eyebrow.ja} en={HERO.eyebrow.en} /></p>
     <h1>
       <LangSwitch>
-        <Fragment slot="ja">{HERO.title.ja[0]}<br /><span class="grad">{HERO.title.ja[1]}</span></Fragment>
-        <Fragment slot="en">{HERO.title.en[0]}<br /><span class="grad">{HERO.title.en[1]}</span></Fragment>
+        <Fragment slot="ja">{HERO.title.ja.lead}<br /><span class="grad">{HERO.title.ja.grad}</span></Fragment>
+        <Fragment slot="en">{HERO.title.en.lead}<span class="grad">{HERO.title.en.grad}</span></Fragment>
       </LangSwitch>
     </h1>
     <p class="lead">

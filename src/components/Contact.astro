@@ -11,8 +11,8 @@ import LangSwitch from './LangSwitch.astro';
     <div class="notice-box" data-reveal>
       <p>
         <LangSwitch>
-          <Fragment slot="ja">{CONTACT.body.ja[0]}<br />{CONTACT.body.ja[1]}</Fragment>
-          <Fragment slot="en">{CONTACT.body.en[0]}<br />{CONTACT.body.en[1]}</Fragment>
+          <Fragment slot="ja"><span class="nowrap">{CONTACT.body.ja[0]}</span><wbr /><span class="nowrap">{CONTACT.body.ja[1]}</span></Fragment>
+          <Fragment slot="en"><span class="nowrap">{CONTACT.body.en[0]}</span><wbr /><span class="nowrap">{CONTACT.body.en[1]}</span></Fragment>
         </LangSwitch>
       </p>
       <p><T ja={CONTACT.note.ja} en={CONTACT.note.en} /></p>
