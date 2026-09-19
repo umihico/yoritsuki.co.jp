@@ -15,6 +15,8 @@
   --chip-bg: rgba(125, 211, 252, 0.08);
   --header-bg: rgba(11, 16, 32, 0.6);
   --shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+  /* 見出しのマルチヒューグラデ（cyan→sky→indigo）。端点の紫を弱めて強度を少し抑える */
+  --grad: linear-gradient(100deg, #7dd3fc 0%, #38bdf8 32%, #6366f1 72%, #818cf8 100%);
 }
 [data-theme="light"] {
   --bg: #f4f7fb;
@@ -32,6 +34,8 @@
   --chip-bg: rgba(2, 132, 199, 0.08);
   --header-bg: rgba(244, 247, 251, 0.6);
   --shadow: 0 12px 32px rgba(29, 43, 66, 0.10);
+  /* ライトは背景が明るいため深めに彩度を寄せて可読性を確保。端点の紫は控えめに */
+  --grad: linear-gradient(100deg, #0891b2 0%, #0284c7 32%, #4f46e5 72%, #5b6ee0 100%);
 }
 
 /* ============ Language ============ */
@@ -172,7 +176,7 @@ h1 {
   letter-spacing: 0.01em;
 }
 h1 .grad {
-  background: linear-gradient(100deg, var(--accent) 10%, var(--accent-strong) 90%);
+  background: var(--grad);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -181,31 +185,16 @@ h1 .grad {
   padding-bottom: 0.14em;
   margin-bottom: -0.14em;
 }
-/* 宣言3文。カード未満・素の段落以上の装飾（番号ピル+区切り線） */
-.decls {
-  margin-top: 34px;
-  max-width: 44em;
-  display: flex;
-  flex-direction: column;
-}
-.decls p {
-  position: relative;
-  font-size: 15.5px;
+/* ヒーローのリード文（宣言3文に代わる1段落のdescription） */
+.lead {
+  margin-top: 30px;
+  max-width: 32em;
+  font-size: clamp(15px, 1.5vw, 18px);
+  line-height: 1.9;
   color: var(--text);
-  padding: 14px 0 14px 52px;
-}
-.decls p + p { border-top: 1px solid var(--border); }
-.decl-num {
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 11px;
-  color: var(--accent);
-  border: 1px solid var(--border-strong);
-  border-radius: 999px;
-  padding: 4px 9px;
-  line-height: 1;
+  /* リード文だけの例外：<wbr>位置（句読点直後）でのみ改行し、語中では折らない。 */
+  word-break: keep-all;
+  overflow-wrap: anywhere;
 }
 
 /* ============ Sections ============ */
@@ -261,6 +250,8 @@ h2 { font-size: clamp(24px, 3vw, 32px); color: var(--text-strong); font-weight: 
   padding: 44px 40px;
 }
 .notice-box p { font-size: 14.5px; color: var(--text); }
+/* 段落を重ねる場合は1行分あける */
+.notice-box p + p { margin-top: 1.25em; }
 
 /* 404 (not-found)。トップと同じ配色で3行構成。数字だけ控えめに大きく、他は通常サイズのミニマル。 */
 .notfound {
@@ -327,11 +318,6 @@ h2 { font-size: clamp(24px, 3vw, 32px); color: var(--text-strong); font-weight: 
   .reveal-in { transition: none; }
 }
 
-/* ============ Typography: 折り返し制御 ============ */
-/* 見出しは行間バランス、本文は孤立行を避ける。日本語は文節単位で折り返す(Chrome) */
-h1, h2 { text-wrap: balance; word-break: auto-phrase; }
-.decls p, .card p, .notice-box p { text-wrap: pretty; word-break: auto-phrase; }
-.company-row dd .main { word-break: auto-phrase; }
 
 /* ============ Responsive ============ */
 @media (max-width: 900px) {

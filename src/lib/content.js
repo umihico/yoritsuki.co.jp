@@ -10,43 +10,37 @@ export const NAV_ITEMS = [
 ];
 
 export const HERO = {
-  eyebrow: 'FULL-CYCLE SOFTWARE ENGINEERING',
+  eyebrow: 'ENGINEERING THE EDGE',
   title: {
-    ja: ['企画・開発・運用', '全部、お任せ。'],
-    en: ['Think, build, run —', 'leave it all to us.'],
+    ja: ['テクノロジーで、', 'エッジを実装する。'],
+    en: ['Built in-house.', 'Traded live.'],
   },
-  // 宣言風の3文。1文ずつ改行して表示する
-  declarations: [
-    {
-      ja: '同じ目線で事業課題を理解し、期待を超える提案を目指します。',
-      en: 'We work at eye level — understanding your business problems and aiming for proposals that exceed expectations.',
-    },
-    {
-      ja: 'AIを安全に活用し、スピードと品質を両立します。',
-      en: 'We use AI safely — for both speed and quality.',
-    },
-    {
-      ja: '企画からリリース以降の保守まで末永くお付き合いします。',
-      en: 'And we stay for the long run — from daily operations to new features.',
-    },
-  ],
+  // ヒーローのリード文は company.js の description を正典として参照（meta と同一定数）
 };
 
 export const CAPABILITIES = [
   {
-    glyph: 'web',
-    title: { ja: 'ソフトウェア開発・技術支援', en: 'Software Development & Technical Support' },
+    glyph: 'research',
+    title: { ja: 'トレード戦略の研究', en: 'Trading Strategy Research' },
     body: {
-      ja: 'Webサービス・モバイルアプリ・業務システムを、企画から開発・保守運用まで一貫してご支援します。',
-      en: 'Web services, mobile apps, and business systems — one team, end to end, from planning through development and maintenance.',
+      ja: '過去の市場データの研究・分析を行い、市場に存在するエッジを発見します。そしてトレード戦略としての採用可否を判断します。',
+      en: 'We research and analyze historical market data to discover edges in the market, then decide whether to adopt them as trading strategies.',
     },
   },
   {
-    glyph: 'algo',
-    title: { ja: '自己勘定取引システムの開発・運用', en: 'Proprietary Trading System Development & Operation' },
+    glyph: 'build',
+    title: { ja: 'トレード戦略・注文執行インフラの開発', en: 'Strategy & Execution Systems' },
     body: {
-      ja: '取引戦略の研究と取引システムを開発し、自己資金によるアルゴリズム取引を行っています。',
-      en: 'We research trading strategies and build our own trading systems, conducting algorithmic trading with our own capital.',
+      ja: 'エッジから利益を得るためのトレード戦略の実装と、注文執行インフラの開発を行います。',
+      en: 'We implement trading strategies to turn edges into profit, and develop the order execution infrastructure they run on.',
+    },
+  },
+  {
+    glyph: 'trade',
+    title: { ja: '自己勘定による運用', en: 'Proprietary Trading' },
+    body: {
+      ja: '戦略毎に自己勘定運用を行い、実際の運用結果に基づく戦略改善や、資金配分の最適化を行います。',
+      en: 'We trade each strategy with our own capital, refining each strategy based on actual live results and optimizing capital allocation.',
     },
   },
 ];
@@ -97,9 +91,15 @@ export const COMPANY_ROWS = [
 ];
 
 export const CONTACT = {
+  // 各要素を <br> で改行して1段落に表示する
   body: {
-    ja: '現在、既存のお客様およびご関係者様からのご紹介に限り、ご相談を承っております。',
-    en: 'At present, we accept new inquiries only through referrals from our existing clients and their associates.',
+    ja: ['お問い合わせ窓口は設けておりません。', 'あらかじめご了承ください。'],
+    en: ['We do not provide a contact channel.', 'Thank you for your understanding.'],
+  },
+  // 本文とのあいだに1行空けて表示する採用に関する補足
+  note: {
+    ja: 'なお、採用も現在は行っておりません。',
+    en: 'We are also not currently hiring.',
   },
 };
 

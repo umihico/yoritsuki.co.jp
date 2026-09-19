@@ -1,7 +1,10 @@
 ---
 import { HERO } from '../lib/content.js';
-import T from './T.astro';
+import { COMPANY } from '../lib/company.js';
 import LangSwitch from './LangSwitch.astro';
+
+// リード文のみの例外：読点/句点の直後に<wbr>を入れ、狭幅時に文節境界で改行させる（.leadのkeep-allと併用）。
+const withBreaks = (s) => s.replace(/([、。])(?!$)/g, '$1<wbr>');
 ---
 <section class="hero" id="hero">
   <div class="wrap">
@@ -12,10 +15,11 @@ import LangSwitch from './LangSwitch.astro';
         <Fragment slot="en">{HERO.title.en[0]}<br /><span class="grad">{HERO.title.en[1]}</span></Fragment>
       </LangSwitch>
     </h1>
-    <div class="decls">
-      {HERO.declarations.map((d, i) => (
-        <p><span class="decl-num mono" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span><T ja={d.ja} en={d.en} /></p>
-      ))}
-    </div>
+    <p class="lead">
+      <LangSwitch>
+        <Fragment slot="ja" set:html={withBreaks(COMPANY.heroLead)} />
+        <Fragment slot="en" set:html={withBreaks(COMPANY.heroLeadEn)} />
+      </LangSwitch>
+    </p>
   </div>
 </section>

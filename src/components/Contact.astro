@@ -2,13 +2,20 @@
 import { CONTACT } from '../lib/content.js';
 import SectionHead from './SectionHead.astro';
 import T from './T.astro';
-// お問い合わせ。フォームは設けず、紹介制である旨のみ案内する。
+import LangSwitch from './LangSwitch.astro';
+// お問い合わせ。窓口は設けず、その旨と採用も行っていない旨のみ案内する。
 ---
 <section id="contact">
   <div class="wrap">
     <SectionHead ja="お問い合わせ" en="Contact" />
     <div class="notice-box" data-reveal>
-      <p><T ja={CONTACT.body.ja} en={CONTACT.body.en} /></p>
+      <p>
+        <LangSwitch>
+          <Fragment slot="ja">{CONTACT.body.ja[0]}<br />{CONTACT.body.ja[1]}</Fragment>
+          <Fragment slot="en">{CONTACT.body.en[0]}<br />{CONTACT.body.en[1]}</Fragment>
+        </LangSwitch>
+      </p>
+      <p><T ja={CONTACT.note.ja} en={CONTACT.note.en} /></p>
     </div>
   </div>
 </section>

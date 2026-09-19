@@ -11,6 +11,8 @@ const esc = (s) =>
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;');
+// 住所のみ：breakBefore（例:「東京都」）の直前に改行機会(<wbr>)を入れ、
+// 以降を nowrap でひとまとまりにする（郵便番号のあとで折り返す）。
 function withBreakHTML(text, breakBefore) {
   if (breakBefore && text.includes(breakBefore)) {
     const i = text.indexOf(breakBefore);
