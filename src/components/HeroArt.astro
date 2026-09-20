@@ -1,0 +1,75 @@
+---
+// ヒーロー背景モチーフ「寄り付き」。社名（＝場の最初の値付け＝価格発見の瞬間）を可視化する。
+// 事業内容カードのグリフと同じモノライン作法（stroke=currentColor / round join・cap）で
+// 統一し、装飾ではなく「意味のあるビジュアル」としてヒーロー右〜背面の空白を埋める。
+//
+// 構図: 板寄せ（価格発見）を経て始値が決まる過程を、左から右へ収束していくローソク足の列＋
+// 気配の細線で表す。最後の1本＝「寄り（opening print）」だけをアクセント色で強調する。
+// アニメは load 時に下から立ち上がるだけ（prefers-reduced-motion で無効）。CSSのみ。
+
+// 決定的な系列（ビルド再現性のため乱数は使わずハードコード）。
+// v は価格（0=安値側/下, 1=高値側/上）。始値決定に向けて緩やかに収束・上昇する。
+const CLOSES = [0.30, 0.37, 0.33, 0.44, 0.40, 0.50, 0.47, 0.58, 0.55, 0.65, 0.62, 0.72];
+const WICK = [0.05, 0.06, 0.04, 0.07, 0.05, 0.06, 0.05, 0.06, 0.05, 0.06, 0.05, 0.07];
+
+const VB_W = 560;
+const VB_H = 360;
+const PAD_X = 30;
+const TOP = 40;
+const RANGE = 250; // 価格が動く縦方向のピクセル幅
+const y = (v) => TOP + (1 - v) * RANGE;
+
+const n = CLOSES.length;
+const step = (VB_W - PAD_X * 2) / (n - 1);
+const bodyW = 15;
+
+const candles = CLOSES.map((c, i) => {
+  const o = i === 0 ? c - 0.05 : CLOSES[i - 1];
+  const cx = PAD_X + i * step;
+  const top = Math.max(o, c);
+  const bot = Math.min(o, c);
+  const yTop = y(top + WICK[i]);
+  const yBot = y(bot - WICK[i]);
+  const yb1 = y(top);
+  const yb2 = y(bot);
+  return {
+    i,
+    cx,
+    up: c >= o,
+    open: i === n - 1, // 最後の1本＝寄り
+    wickY1: yTop,
+    wickY2: yBot,
+    bodyY: yb1,
+    bodyH: Math.max(3, yb2 - yb1),
+  };
+});
+
+// 気配の細線（始値レベル）。最後の寄り値の高さに水平線を引く。
+const openLevel = y(CLOSES[n - 1]);
+const openX = PAD_X + (n - 1) * step;
+
+// 価格発見のパス（各ローソクの終値を結ぶ薄い折れ線）。
+const pathD =
+  'M ' + CLOSES.map((c, i) => `${(PAD_X + i * step).toFixed(1)} ${y(c).toFixed(1)}`).join(' L ');
+---
+<div class="hero-art" aria-hidden="true">
+  <svg viewBox={`0 0 ${VB_W} ${VB_H}`} fill="none" preserveAspectRatio="xMidYMid meet">
+    <!-- 価格発見の折れ線（背面・最も淡い） -->
+    <path class="ha-path" d={pathD} stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
+    <!-- 始値レベルの気配線 -->
+    <line class="ha-level" x1={PAD_X} y1={openLevel} x2={openX} y2={openLevel} stroke="currentColor" stroke-width="1" stroke-dasharray="2 5" />
+    <!-- ローソク列 -->
+    <g class="ha-candles" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+      {candles.map((k) => (
+        <g class={`ha-candle${k.open ? ' is-open' : ''}`} style={`--d:${k.i * 55}ms`}>
+          <line x1={k.cx} y1={k.wickY1} x2={k.cx} y2={k.wickY2} />
+          <rect x={k.cx - bodyW / 2} y={k.bodyY} width={bodyW} height={k.bodyH} rx="1.5" fill={k.open ? 'currentColor' : 'none'} fill-opacity={k.open ? '0.14' : '0'} />
+        </g>
+      ))}
+    </g>
+    <!-- 寄りのマーカー（最後の1本の始値位置に小さな照準） -->
+    <g class="ha-mark" stroke="currentColor" stroke-width="1.2" stroke-linecap="round">
+      <circle cx={openX} cy={openLevel} r="4.5" fill="none" />
+    </g>
+  </svg>
+</div>

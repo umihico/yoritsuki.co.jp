@@ -15,6 +15,11 @@
   --chip-bg: rgba(125, 211, 252, 0.08);
   --header-bg: rgba(11, 16, 32, 0.6);
   --shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+  /* 副アクセント（寄りの強調＝periwinkle）。cyan一辺倒の定番配色に厚みを与える。 */
+  --accent-2: #a5b4fc;
+  /* ヒーロー背景モチーフ「寄り付き」の線色。テキストと干渉しないよう極薄。 */
+  --art-line: rgba(125, 211, 252, 0.30);
+  --art-open: rgba(165, 180, 252, 0.85);
   /* 見出しグラデは日英共通の1本（cyan→periwinkle）。深いindigoを踏まないため
      グラデ全域が背景グロー込みでも WCAG AAA(大文字4.5) を満たす（最小CR≈5.2）。 */
   --grad: linear-gradient(100deg, #7dd3fc 0%, #818cf8 100%);
@@ -35,6 +40,9 @@
   --chip-bg: rgba(2, 132, 199, 0.08);
   --header-bg: rgba(244, 247, 251, 0.6);
   --shadow: 0 12px 32px rgba(29, 43, 66, 0.10);
+  --accent-2: #443cd0;
+  --art-line: rgba(4, 90, 117, 0.22);
+  --art-open: rgba(68, 60, 208, 0.55);
   /* 見出しグラデは日英共通の1本（明背景用に一段深い blue→indigo）。
      グラデ全域が背景グロー込みでも WCAG AAA(大文字4.5) を満たす（最小CR≈5.9）。 */
   --grad: linear-gradient(100deg, #045a75 0%, #443cd0 100%);
@@ -170,7 +178,63 @@ a { color: inherit; }
 .lsw { display: contents; }
 
 /* ============ Hero ============ */
-.hero { padding: 168px 0 96px; }
+/* テキストは左寄せのまま、右〜背面に「寄り付き」モチーフを敷いて空白を意味で埋める。
+   縦は min-height でファーストビューを占有し、内容を視覚中心へ寄せる（未完成感の解消）。 */
+.hero {
+  position: relative;
+  padding: 148px 0 104px;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+.hero .wrap { position: relative; z-index: 1; }
+
+/* ---- 背景モチーフ「寄り付き」 ---- */
+.hero-art {
+  position: absolute;
+  top: 50%;
+  right: max(-40px, calc((100% - 1120px) / 2 - 40px));
+  transform: translateY(-50%);
+  width: min(58%, 680px);
+  color: var(--art-line);
+  pointer-events: none;
+  z-index: 0;
+  /* 左側（テキスト背後）はマスクで消し、右へ向けて現れる */
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 42%, #000 100%);
+  mask-image: linear-gradient(90deg, transparent 0%, #000 42%, #000 100%);
+}
+.hero-art svg { display: block; width: 100%; height: auto; }
+.hero-art .ha-level { opacity: 0.7; }
+.hero-art .ha-candle.is-open { color: var(--art-open); }
+.hero-art .ha-mark { color: var(--art-open); }
+
+/* load 時: ローソクが下から立ち上がり、寄りマーカーが最後に点く。線画は描画される。 */
+.hero-art .ha-candle {
+  opacity: 0;
+  transform: translateY(14px);
+  animation: haRise 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation-delay: var(--d);
+}
+/* パスは opacity フェード（合成可能プロパティのみ）。stroke-dashoffset のような
+   非合成アニメは Lighthouse「非合成アニメ」診断の対象になり得るため避ける。 */
+.hero-art .ha-path {
+  opacity: 0;
+  animation: haFade 1s ease forwards 0.2s;
+}
+.hero-art .ha-mark {
+  opacity: 0;
+  animation: haPop 0.5s ease forwards 0.85s;
+}
+@keyframes haRise { to { opacity: 1; transform: none; } }
+@keyframes haFade { to { opacity: 0.5; } }
+@keyframes haPop { from { opacity: 0; transform: scale(0.4); } to { opacity: 0.9; transform: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .hero-art .ha-candle,
+  .hero-art .ha-path,
+  .hero-art .ha-mark { animation: none; opacity: 1; transform: none; }
+  .hero-art .ha-path { opacity: 0.5; }
+}
 .eyebrow {
   font-size: 12px;
   color: var(--accent);
@@ -202,7 +266,7 @@ h1 .grad {
 .lead {
   margin-top: 30px;
   max-width: 32em;
-  font-size: clamp(15px, 1.5vw, 18px);
+  font-size: clamp(16px, 1.6vw, 20px);
   line-height: 1.9;
   color: var(--text);
   /* リード文だけの例外：<wbr>位置（句読点直後）でのみ改行し、語中では折らない。 */
@@ -214,7 +278,7 @@ h1 .grad {
 section { padding: 88px 0; }
 .section-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 18px; margin-bottom: 48px; }
 h2 { font-size: clamp(24px, 3vw, 32px); color: var(--text-strong); font-weight: 700; }
-.section-en { font-size: 12.5px; color: var(--accent); letter-spacing: 0.18em; }
+.section-en { font-size: 12px; color: var(--accent); letter-spacing: 0.18em; }
 
 /* Capability cards */
 .cards {
@@ -226,12 +290,27 @@ h2 { font-size: clamp(24px, 3vw, 32px); color: var(--text-strong); font-weight: 
   background: var(--panel);
   padding: 40px;
 }
-.card h3 { font-size: 15.5px; color: var(--text-strong); font-weight: 600; margin-bottom: 14px; }
-.card p { font-size: 13.5px; color: var(--muted); }
-.card .glyph { height: 56px; margin-bottom: 20px; color: var(--accent); }
+.card { transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1); }
+.card h3 { font-size: 16px; color: var(--text-strong); font-weight: 600; margin-bottom: 14px; }
+.card p { font-size: 15px; color: var(--muted); }
+.card .glyph {
+  height: 56px;
+  margin-bottom: 20px;
+  color: var(--accent);
+  transition: color 0.3s ease, filter 0.3s ease, transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
 .card .glyph svg { height: 100%; width: auto; }
+/* hover: カードがわずかに浮き、グリフが発光して主張する（信頼感を壊さない範囲の手触り） */
+@media (hover: hover) {
+  .card:hover { transform: translateY(-4px); }
+  .card:hover .glyph {
+    color: var(--accent-strong);
+    transform: translateY(-2px);
+    filter: drop-shadow(0 0 10px var(--art-open));
+  }
+}
 /* カード下の用語注釈（* エッジ＝優位性）。小さく控えめに、パネル外へ */
-.cards-note { margin-top: 14px; font-size: 12.5px; color: var(--muted); }
+.cards-note { margin-top: 14px; font-size: 13px; color: var(--muted); }
 
 /* Company table */
 .company-table { border-top: 1px solid var(--border); }
@@ -243,7 +322,7 @@ h2 { font-size: clamp(24px, 3vw, 32px); color: var(--text-strong); font-weight: 
   border-bottom: 1px solid var(--border);
 }
 .company-row dt { font-size: 13px; color: var(--muted); padding-top: 3px; }
-.company-row dd .main { font-size: 15.5px; color: var(--text-strong); }
+.company-row dd .main { font-size: 16px; color: var(--text-strong); }
 .company-row dd .sub { font-size: 13px; color: var(--muted); margin-top: 2px; }
 .nowrap { white-space: nowrap; }
 /* 住所の明示マップリンク。OS自動リンクの派手な青ではなく、意図的で控えめな下線に */
@@ -264,7 +343,7 @@ h2 { font-size: clamp(24px, 3vw, 32px); color: var(--text-strong); font-weight: 
   background: var(--panel);
   padding: 44px 40px;
 }
-.notice-box p { font-size: 14.5px; color: var(--text); }
+.notice-box p { font-size: 15px; color: var(--text); }
 /* 段落を重ねる場合は1行分あける */
 .notice-box p + p { margin-top: 1.25em; }
 
@@ -308,7 +387,7 @@ h2 { font-size: clamp(24px, 3vw, 32px); color: var(--text-strong); font-weight: 
   align-items: center;
   gap: 8px;
   text-decoration: none;
-  font-size: 14px;
+  font-size: 15px;
   color: var(--accent);
   border-bottom: 1px solid var(--border-strong);
   padding-bottom: 2px;
@@ -317,7 +396,28 @@ h2 { font-size: clamp(24px, 3vw, 32px); color: var(--text-strong); font-weight: 
 .notice-link:hover { color: var(--accent-strong); border-color: var(--accent-strong); }
 
 /* ============ Footer ============ */
-.site-footer { border-top: 1px solid var(--border); padding: 40px 0; }
+/* プレーンな上罫線に代え、両端がフェードするヘアライン＋中央の小さなダイヤで「締め」を作る。 */
+.site-footer { position: relative; border-top: 0; padding: 48px 0 40px; }
+.site-footer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-strong) 22%, var(--border-strong) 78%, transparent);
+}
+.site-footer::after {
+  content: "";
+  position: absolute;
+  top: -3px;
+  left: 50%;
+  width: 6px;
+  height: 6px;
+  transform: translateX(-50%) rotate(45deg);
+  background: var(--accent-strong);
+  border-radius: 1px;
+}
 .copyright { font-size: 12px; color: var(--muted); }
 
 /* ============ Reveal on scroll (JS adds .reveal-pending; default is visible) ============ */
@@ -336,7 +436,27 @@ h2 { font-size: clamp(24px, 3vw, 32px); color: var(--text-strong); font-weight: 
 
 /* ============ Responsive ============ */
 @media (max-width: 900px) {
-  .hero { padding-top: 140px; }
+  /* SPもPC同様にファーストビューを占有する（次の「事業内容」を覗かせない）。
+     縦フレックスで [テキスト → モチーフ] を上下に積み、全体を垂直センタリング。
+     モチーフはテキスト背後を避けて下段へ流し、マスクなしで全景を見せる。 */
+  .hero {
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+    gap: 8px;
+    padding-top: 128px;
+    padding-bottom: 48px;
+  }
+  .hero-art {
+    position: relative;
+    top: auto;
+    right: auto;
+    transform: none;
+    width: 100%;
+    opacity: 0.85;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
   .cards { grid-template-columns: 1fr; padding: 28px; }
   .company-row { grid-template-columns: 1fr; gap: 6px; padding: 20px 4px; }
   .site-nav { gap: 16px; }

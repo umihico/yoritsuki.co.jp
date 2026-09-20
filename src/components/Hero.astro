@@ -2,6 +2,7 @@
 import { HERO } from '../lib/content.js';
 import { COMPANY } from '../lib/company.js';
 import LangSwitch from './LangSwitch.astro';
+import HeroArt from './HeroArt.astro';
 import T from './T.astro';
 
 // 読点/句点の直後に<wbr>を入れ、狭幅時に文節境界で改行させる（h1・.lead の keep-all と併用）。
@@ -23,4 +24,5 @@ const withBreaks = (s) => s.replace(/([、。])(?!$)/g, '$1<wbr>');
       </LangSwitch>
     </p>
   </div>
+  <HeroArt />
 </section>
