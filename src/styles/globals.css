@@ -94,14 +94,16 @@ a { color: inherit; }
   gap: 16px;
   height: 72px;
 }
-.brand { text-decoration: none; line-height: 1.25; }
+/* 2段を縦フレックスで中央揃え。長い方が幅を決め、短い方はその中心に揃う（日英共通） */
+.brand { display: flex; flex-direction: column; align-items: center; gap: 6px; text-decoration: none; line-height: 1.25; }
+/* テキスト行をインク(キャップ〜ベースライン)にトリム。SVG(既にタイト)と同じ箱になり、
+   gap だけで主・副の間隔が決まる＝日英で完全一致 */
+.brand .name, .brand .roman { text-box: trim-both cap alphabetic; }
 .brand .name { font-weight: 700; font-size: 17px; color: var(--text-strong); }
-/* テキスト時のグリフ左上(右2.19px/下4.26px)に描画開始点を合わせ、下段位置も行ボックス相当に戻す */
-.brand .name-logo { display: block; height: 15px; width: auto; transform: translate(2.19px, 4.26px); margin-bottom: 6.25px; }
-/* 英語版下段: カタカナ「ヨリツキ」(10px時の視認高≈7.28px)相当のSVGに置換。
-   描画開始点をカタカナ位置(右1.57px/下2.97px)へ合わせ、行ボックス高も元(12.5px)相当に復元 */
-.brand .roman-logo { display: block; height: 7.28px; width: auto; transform: translate(1.57px, 2.97px); margin-bottom: 5.23px; }
-.brand .roman { font-size: 10px; color: var(--muted); letter-spacing: 0.35em; }
+.brand .name-logo { display: block; height: 15px; width: auto; }
+/* 下段ローマ字はメイン(.name)とサイズ・色以外を完全一致（本文フォント/700/字間normal） */
+.brand .roman { font-weight: 700; font-size: 10px; color: var(--muted); }
+.brand .roman-logo { display: block; height: 7.8px; width: auto; }
 .nav-group { display: flex; align-items: center; gap: 20px; }
 /* スライダー型ナビ：現在地の下線バーがリンク間をスライドする */
 .site-nav {
