@@ -183,11 +183,12 @@ a { color: inherit; }
 .hero {
   position: relative;
   padding: 148px 0 104px;
-  /* URLバーの状態に依らず次セクションを覗かせないため、最小(svh)ではなく
-     最大(lvh=古典的な100vh)でファーストビューを確保する。svhだと初回ロードで
-     表示領域がsvhより広い場合にヒーローが足りず、下の見出しが覗いてしまう。 */
+  /* URLバーの状態に依らず次セクションを覗かせない。svh(最小)だと初回ロードで
+     表示領域がsvhより広い場合にヒーローが足りず下の見出しが覗く（特にコンテンツが
+     短い日本語1行時）。dvh は「今この瞬間の可視領域」そのものなので、常に画面ぴったりを
+     占有し次セクションをフォールド外へ押し出せる。100vh を fallback に併記。 */
   min-height: 100vh;
-  min-height: 100lvh;
+  min-height: 100dvh;
   display: flex;
   align-items: center;
   overflow: hidden;
@@ -487,7 +488,9 @@ h2 { font-size: clamp(24px, 3vw, 32px); color: var(--text-strong); font-weight: 
   /* SPはナビ折返しと重なり情報過多になるため反対言語のサブ行は非表示 */
   .brand .roman { display: none; }
 
-  .hero { padding: 128px 0 64px; }
+  /* 上下パディングの差(≈2段ヘッダー高)で、テキスト+チャートを「ヘッダー下の可視領域」の
+     真の中央へ寄せる（PC同様のセンタリング感）。justify-content:center と併用。 */
+  .hero { padding: 148px 0 48px; }
   .eyebrow { letter-spacing: 0.16em; }
   section { padding: 64px 0; }
   .section-head { margin-bottom: 36px; }
