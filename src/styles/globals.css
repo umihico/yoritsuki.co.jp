@@ -183,7 +183,11 @@ a { color: inherit; }
 .hero {
   position: relative;
   padding: 148px 0 104px;
-  min-height: 100svh;
+  /* URLバーの状態に依らず次セクションを覗かせないため、最小(svh)ではなく
+     最大(lvh=古典的な100vh)でファーストビューを確保する。svhだと初回ロードで
+     表示領域がsvhより広い場合にヒーローが足りず、下の見出しが覗いてしまう。 */
+  min-height: 100vh;
+  min-height: 100lvh;
   display: flex;
   align-items: center;
   overflow: hidden;
