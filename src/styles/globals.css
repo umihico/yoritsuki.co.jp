@@ -96,6 +96,8 @@ a { color: inherit; }
 }
 .brand { text-decoration: none; line-height: 1.25; }
 .brand .name { font-weight: 700; font-size: 17px; color: var(--text-strong); }
+/* テキスト時のグリフ左上(右2.19px/下4.26px)に描画開始点を合わせ、下段位置も行ボックス相当に戻す */
+.brand .name-logo { display: block; height: 15px; width: auto; transform: translate(2.19px, 4.26px); margin-bottom: 6.25px; }
 .brand .roman { font-size: 10px; color: var(--muted); letter-spacing: 0.35em; }
 .nav-group { display: flex; align-items: center; gap: 20px; }
 /* スライダー型ナビ：現在地の下線バーがリンク間をスライドする */
