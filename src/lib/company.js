@@ -11,11 +11,11 @@ export const COMPANY = {
   description:
     '株式会社ヨリツキは、国内株式のアルゴリズム取引を行う企業です。トレード戦略の研究と、執行インフラの開発、自己勘定運用を行っています。',
   descriptionEn:
-    'Yoritsuki is an algorithmic trading firm specializing in Japanese equities. We research trading strategies, develop execution infrastructure, and trade our own capital.',
+    'Yoritsuki is an algorithmic trading firm active in Japanese equities. We research trading strategies, develop execution infrastructure, and trade our own capital.',
   // ヒーロー見出し下のリード文。meta=description とは別定数（用途が違う）だが、
   // description の第1文と一致させること。乖離防止のため必ずこの直後に隣接定義する。
   heroLead: '株式会社ヨリツキは、国内株式のアルゴリズム取引を行う企業です。',
-  heroLeadEn: 'Yoritsuki is an algorithmic trading firm specializing in Japanese equities.',
+  heroLeadEn: 'Yoritsuki is an algorithmic trading firm active in Japanese equities.',
   founder: { ja: '岩佐 海彦', en: 'Umihiko Iwasa' },
   // date: JSON-LD用のISO表記 / ja・en: 会社概要テーブル用の表示表記（同一事実の別フォーマット）
   founding: { date: '2026-08', ja: '2026年8月', en: 'August 2026' },

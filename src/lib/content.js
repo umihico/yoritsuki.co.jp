@@ -10,16 +10,18 @@ export const NAV_ITEMS = [
 ];
 
 export const HERO = {
-  // eyebrow（小さいkicker）は言語別。ja=ブランドの宣言 / en=具体的事実の2断片を中黒で連結。
+  // eyebrow（小さいkicker）は各言語で英字のミッション句を置く。
+  // ja='ENGINEERING THE EDGE'（=en見出しと同句のブランドタグライン）/ en='RESEARCH. CODE. EXECUTION.'（事業3本柱のプロセス）。
   eyebrow: {
     ja: 'ENGINEERING THE EDGE',
-    en: 'BUILT IN-HOUSE · TRADED LIVE',
+    en: 'RESEARCH. CODE. EXECUTION.',
   },
-  // 見出しは lead / grad の2セグメント。
-  // ja: 常に2行（表示側 <br>／lead 末尾の読点「、」で改行）。PC・SPとも2行を維持。
-  // en: PCは1行、SPのみ折返し（表示側で "Engineering" の後に <wbr>、「the Edge」は .nowrap で一体。grad="Edge"のみ着色）。
+  // 見出しは lead / grad の2セグメント。着色グラデは日英共通の --grad 1本（言語で区別しない）。
+  // ja: 2文目「市場に挑む。」を着色 / en: 核語 "Edge" を着色。どちらも同じ --grad を通す。
+  // ja: 英語同様、収まる幅なら1行。折り返す場合のみ lead/grad 間の <wbr>（読点「、」直後）で改行。
+  // en: PCは1行、SPのみ折返し（表示側で "Engineering" の後に <wbr>、「the Edge」は .nowrap で一体）。
   title: {
-    ja: { lead: 'テクノロジーで、', grad: 'エッジを実装する。' },
+    ja: { lead: '技術力で、', grad: '市場に挑む。' },
     en: { lead: 'Engineering', grad: 'Edge' },
   },
   // ヒーローのリード文は company.js の description を正典として参照（meta と同一定数）

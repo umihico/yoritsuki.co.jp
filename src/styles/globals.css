@@ -15,10 +15,9 @@
   --chip-bg: rgba(125, 211, 252, 0.08);
   --header-bg: rgba(11, 16, 32, 0.6);
   --shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
-  /* 見出しのマルチヒューグラデ（cyan→sky→indigo）。端点の紫を弱めて強度を少し抑える */
-  --grad: linear-gradient(100deg, #7dd3fc 0%, #38bdf8 32%, #6366f1 72%, #818cf8 100%);
-  /* 英語見出しの "Edge" は1語のみ着色。短い語では4色グラデが圧縮され派手になるため端点2色に絞る */
-  --grad-en: linear-gradient(100deg, #7dd3fc 0%, #818cf8 100%);
+  /* 見出しグラデは日英共通の1本（cyan→periwinkle）。深いindigoを踏まないため
+     グラデ全域が背景グロー込みでも WCAG AAA(大文字4.5) を満たす（最小CR≈5.2）。 */
+  --grad: linear-gradient(100deg, #7dd3fc 0%, #818cf8 100%);
 }
 [data-theme="light"] {
   --bg: #f4f7fb;
@@ -31,15 +30,14 @@
   --text: #1d2b42;
   --text-strong: #0d1b31;
   --muted: #5a6b82;
-  --accent: #0369a1;
+  --accent: #024b68;
   --accent-strong: #0284c7;
   --chip-bg: rgba(2, 132, 199, 0.08);
   --header-bg: rgba(244, 247, 251, 0.6);
   --shadow: 0 12px 32px rgba(29, 43, 66, 0.10);
-  /* ライトは背景が明るいため深めに彩度を寄せて可読性を確保。端点の紫は控えめに。
-     各ストップを一段暗くしてコントラストを上げている（明背景での見出し可読性優先）。 */
-  --grad: linear-gradient(100deg, #077d9c 0%, #026fa8 32%, #443cd0 72%, #4f61cf 100%);
-  --grad-en: linear-gradient(100deg, #026fa8 0%, #443cd0 100%);
+  /* 見出しグラデは日英共通の1本（明背景用に一段深い blue→indigo）。
+     グラデ全域が背景グロー込みでも WCAG AAA(大文字4.5) を満たす（最小CR≈5.9）。 */
+  --grad: linear-gradient(100deg, #045a75 0%, #443cd0 100%);
 }
 
 /* ============ Language ============ */
@@ -185,6 +183,9 @@ h1 {
   font-weight: 700;
   color: var(--text-strong);
   letter-spacing: 0.01em;
+  /* 英語同様、収まる幅では1行。折り返す場合のみ<wbr>位置（句読点直後）で改行し、語中では折らない。 */
+  word-break: keep-all;
+  overflow-wrap: anywhere;
 }
 h1 .grad {
   background: var(--grad);
@@ -196,8 +197,7 @@ h1 .grad {
   padding-bottom: 0.14em;
   margin-bottom: -0.14em;
 }
-/* 英語見出しは "Edge" 一語のみ着色。background-image のみ上書き（text-clip は維持）。 */
-:root[lang="en"] h1 .grad { background-image: var(--grad-en); }
+/* 見出しグラデは日英共通の --grad 1本（言語別の上書きは廃止）。 */
 /* ヒーローのリード文（宣言3文に代わる1段落のdescription） */
 .lead {
   margin-top: 30px;
