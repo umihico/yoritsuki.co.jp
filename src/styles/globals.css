@@ -90,10 +90,11 @@ a { color: inherit; }
 .site-header .wrap {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 16px;
+  gap: 20px;
   height: 72px;
 }
+/* brand を左、nav+toggles を右へまとめる（PCは1ライン） */
+.brand { margin-right: auto; }
 /* 2段を縦フレックスで中央揃え。長い方が幅を決め、短い方はその中心に揃う（日英共通） */
 .brand { display: flex; flex-direction: column; align-items: center; gap: 6px; text-decoration: none; line-height: 1.25; }
 /* テキスト行をインク(キャップ〜ベースライン)にトリム。SVG(既にタイト)と同じ箱になり、
@@ -104,7 +105,6 @@ a { color: inherit; }
 /* 下段ローマ字はメイン(.name)とサイズ・色以外を完全一致（本文フォント/700/字間normal） */
 .brand .roman { font-weight: 700; font-size: 10px; color: var(--muted); }
 .brand .roman-logo { display: block; height: 7.8px; width: auto; }
-.nav-group { display: flex; align-items: center; gap: 20px; }
 /* スライダー型ナビ：現在地の下線バーがリンク間をスライドする */
 .site-nav {
   position: relative;
@@ -347,18 +347,21 @@ h2 { font-size: clamp(24px, 3vw, 32px); color: var(--text-strong); font-weight: 
   .wrap { padding: 0 20px; }
   html { scroll-padding-top: 128px; }
 
-  /* ヘッダーは2段組（1段目: ブランド+トグル / 2段目: ナビ） */
+  /* ヘッダーは2段組（1段目: ブランド+コントロールバー / 2段目: ナビ）。
+     絶対配置は使わず、flex-wrap + order で表現する */
   .site-header .wrap {
-    position: relative;
     height: auto;
     flex-wrap: wrap;
-    padding-top: 12px;
-    padding-bottom: 14px;
-    row-gap: 14px;
+    padding-top: 14px;
+    padding-bottom: 16px;
+    row-gap: 16px;
   }
-  .site-header .toggles { position: absolute; top: 14px; right: 20px; }
-  .nav-group { width: 100%; }
-  .site-nav { gap: 18px; }
+  /* 1段目: brand(左) と toggles(右)。brand の margin-right:auto が toggles を右端へ押す */
+  .site-header .toggles { order: 2; }
+  /* 2段目: ナビは全幅で次行へ折り返す */
+  .site-header .site-nav { order: 3; flex-basis: 100%; gap: 18px; }
+  /* SPはナビ折返しと重なり情報過多になるため反対言語のサブ行は非表示 */
+  .brand .roman { display: none; }
 
   .hero { padding: 128px 0 64px; }
   .eyebrow { letter-spacing: 0.16em; }

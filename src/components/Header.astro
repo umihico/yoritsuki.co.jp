@@ -19,21 +19,19 @@ const brandLabel = locale === 'en' ? `${COMPANY.name.en} home` : `${COMPANY.name
     <a class="brand" href={localizedHref(locale, '/')} data-href-ja="/" data-href-en="/en/" aria-label={brandLabel}>
       <Brand />
     </a>
-    <div class="nav-group">
-      <nav class="site-nav" aria-label={locale === 'en' ? 'Global navigation' : 'グローバルナビゲーション'}>
-        <span class="nav-indicator" aria-hidden="true" style="left:0;width:0;opacity:0"></span>
-        {NAV_ITEMS.map((item) => (
-          <a href={localizedHref(locale, item.href)} data-href-ja={item.href} data-href-en={localizedHref('en', item.href)}>
-            <T ja={item.ja} en={item.en} />
-          </a>
-        ))}
-      </nav>
-      <div class="toggles" role="group" aria-label={locale === 'en' ? 'Language & theme' : '言語・テーマ設定'}>
-        <a class="lang-btn mono" href={otherHref} data-lang-target={other} aria-label={otherLabel}>{otherShort}</a>
-        <button type="button" class="theme-toggle" aria-label="テーマ切替 / Toggle theme">
-          <span class="icon-moon" aria-hidden="true">🌙</span><span class="icon-sun" aria-hidden="true">☀️</span>
-        </button>
-      </div>
+    <nav class="site-nav" aria-label={locale === 'en' ? 'Global navigation' : 'グローバルナビゲーション'}>
+      <span class="nav-indicator" aria-hidden="true" style="left:0;width:0;opacity:0"></span>
+      {NAV_ITEMS.map((item) => (
+        <a href={localizedHref(locale, item.href)} data-href-ja={item.href} data-href-en={localizedHref('en', item.href)}>
+          <T ja={item.ja} en={item.en} />
+        </a>
+      ))}
+    </nav>
+    <div class="toggles" role="group" aria-label={locale === 'en' ? 'Language & theme' : '言語・テーマ設定'}>
+      <a class="lang-btn mono" href={otherHref} data-lang-target={other} aria-label={otherLabel}>{otherShort}</a>
+      <button type="button" class="theme-toggle" aria-label="テーマ切替 / Toggle theme">
+        <span class="icon-moon" aria-hidden="true">🌙</span><span class="icon-sun" aria-hidden="true">☀️</span>
+      </button>
     </div>
   </div>
 </header>
