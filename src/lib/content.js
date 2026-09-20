@@ -30,16 +30,16 @@ export const CAPABILITIES = [
     glyph: 'research',
     title: { ja: 'トレード戦略の研究', en: 'Trading Strategy Research' },
     body: {
-      ja: '過去の市場データを研究・分析し、市場に存在するエッジを発見します。そのうえで、トレード戦略としての採用可否を判断します。',
-      en: 'We research and analyze historical data to discover edges in the market, then decide whether to adopt them as trading strategies.',
+      ja: '過去の市場データを研究・分析し、市場に存在するエッジ*を発見します。そのうえで、トレード戦略としての採用可否を判断します。',
+      en: 'We research and analyze historical data to discover market edges*, then decide whether to adopt them as trading strategies.',
     },
   },
   {
     glyph: 'build',
     title: { ja: 'トレード戦略・注文執行インフラの開発', en: 'Strategy & Execution Systems' },
     body: {
-      ja: 'エッジを利益に変えるトレード戦略を実装し、それを動かす注文執行インフラを開発します。',
-      en: 'We implement trading strategies to turn edges into profit, and develop the order execution infrastructure they run on.',
+      ja: '市場に生じるエッジをリアルタイムに検出する監視基盤と、検出したエッジを遅延なく自動で注文執行するアルゴリズム・インフラを開発します。',
+      en: 'We develop the monitoring platform that detects market edges in real time, and the algorithms and infrastructure that execute orders on them automatically, without delay.',
     },
   },
   {
@@ -51,6 +51,13 @@ export const CAPABILITIES = [
     },
   },
 ];
+
+// 事業内容カードの下に置く小さな注釈。専門用語「エッジ」の意味を section 内で一度だけ定義する
+// （各カードにインラインで（優位性）と繰り返さず、用語のトーンを保ちつつ可読性を確保）。
+export const CAPABILITIES_NOTE = {
+  ja: '* エッジ（優位性）：市場に潜む価格の歪みや偏りを捉え、それに基づく取引によって利益が見込めること。',
+  en: '* Edge: an advantage — by identifying price distortions or biases hidden in the market and trading on them, a profit can be expected.',
+};
 
 export const COMPANY_ROWS = [
   {
