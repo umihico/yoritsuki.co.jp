@@ -1,17 +1,15 @@
 ---
-// ブランドロックアップ（2段）。上段=現在言語、下段=反対言語（Tの引数入替で表現）。
-// 上段の日本語「ヨリツキ」だけは正本ロゴ(brand/yoritsuki-logo.svg #lockup-4)の
-// 文字グリフを流用したインラインSVGで描く。英語(YORITSUKI)と下段は従来どおり文字列。
-import T from './T.astro';
+// ブランドロックアップ（2段）。上段=現在言語、下段=反対言語。
+// カタカナ「ヨリツキ」は上段(日本語)・下段(英語)いずれも正本ロゴ字形の
+// インラインSVG(Wordmark)で描く。ローマ字「YORITSUKI」は従来どおり文字列。
 import LangSwitch from './LangSwitch.astro';
+import Wordmark from './Wordmark.astro';
 ---
 <div class="name"><LangSwitch>
-  <Fragment slot="ja"><svg class="name-logo" viewBox="0 0 720 146" fill="currentColor" role="img" aria-label="ヨリツキ">
-    <rect x="117" y="0" width="41" height="145"/><rect x="0" y="0" width="158" height="29"/><rect x="1" y="59" width="157" height="28"/><rect x="0" y="117" width="158" height="28"/>
-    <rect x="296" y="0" width="38" height="146"/><rect x="195" y="0" width="38" height="85"/><rect x="247" y="117" width="87" height="29"/>
-    <rect x="483" y="0" width="38" height="146"/><rect x="371" y="0" width="35" height="75"/><rect x="427" y="0" width="34" height="75"/><rect x="384" y="117" width="137" height="29"/>
-    <rect x="620" y="0" width="40" height="146"/><rect x="559" y="14" width="161" height="29"/><rect x="558" y="85" width="162" height="30"/>
-  </svg></Fragment>
+  <Fragment slot="ja"><Wordmark class="name-logo" /></Fragment>
   <Fragment slot="en">YORITSUKI</Fragment>
 </LangSwitch></div>
-<div class="roman mono"><T ja="YORITSUKI" en="ヨリツキ" /></div>
+<div class="roman mono"><LangSwitch>
+  <Fragment slot="ja">YORITSUKI</Fragment>
+  <Fragment slot="en"><Wordmark class="roman-logo" /></Fragment>
+</LangSwitch></div>

@@ -98,6 +98,9 @@ a { color: inherit; }
 .brand .name { font-weight: 700; font-size: 17px; color: var(--text-strong); }
 /* テキスト時のグリフ左上(右2.19px/下4.26px)に描画開始点を合わせ、下段位置も行ボックス相当に戻す */
 .brand .name-logo { display: block; height: 15px; width: auto; transform: translate(2.19px, 4.26px); margin-bottom: 6.25px; }
+/* 英語版下段: カタカナ「ヨリツキ」(10px時の視認高≈7.28px)相当のSVGに置換。
+   描画開始点をカタカナ位置(右1.57px/下2.97px)へ合わせ、行ボックス高も元(12.5px)相当に復元 */
+.brand .roman-logo { display: block; height: 7.28px; width: auto; transform: translate(1.57px, 2.97px); margin-bottom: 5.23px; }
 .brand .roman { font-size: 10px; color: var(--muted); letter-spacing: 0.35em; }
 .nav-group { display: flex; align-items: center; gap: 20px; }
 /* スライダー型ナビ：現在地の下線バーがリンク間をスライドする */
