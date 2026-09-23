@@ -9,7 +9,7 @@
 
 // 決定的な系列（ビルド再現性のため乱数は使わずハードコード）。
 // v は価格（0=安値側/下, 1=高値側/上）。始値決定に向けて緩やかに収束・上昇する。
-const CLOSES = [0.30, 0.37, 0.33, 0.44, 0.40, 0.50, 0.47, 0.58, 0.55, 0.65, 0.62, 0.72];
+const CLOSES = [0.30, 0.38, 0.32, 0.42, 0.37, 0.48, 0.44, 0.56, 0.52, 0.63, 0.60, 0.72];
 const WICK = [0.05, 0.06, 0.04, 0.07, 0.05, 0.06, 0.05, 0.06, 0.05, 0.06, 0.05, 0.07];
 
 const VB_W = 560;
@@ -63,7 +63,9 @@ const pathD =
       {candles.map((k) => (
         <g class={`ha-candle${k.open ? ' is-open' : ''}`} style={`--d:${k.i * 55}ms`}>
           <line x1={k.cx} y1={k.wickY1} x2={k.cx} y2={k.wickY2} />
-          <rect x={k.cx - bodyW / 2} y={k.bodyY} width={bodyW} height={k.bodyH} rx="1.5" fill={k.open ? 'currentColor' : 'none'} fill-opacity={k.open ? '0.14' : '0'} />
+          {/* ローソク足の文法: 陽線(up)=中空 / 陰線(down)=塗り。色でなく形で陽陰を描き分け、
+              赤緑クリシェを避けつつ単色規律を保つ。寄り(open)だけは別扱いで淡く塗って強調。 */}
+          <rect x={k.cx - bodyW / 2} y={k.bodyY} width={bodyW} height={k.bodyH} rx="1.5" fill={k.open ? 'currentColor' : (k.up ? 'none' : 'currentColor')} fill-opacity={k.open ? '0.14' : (k.up ? '0' : '0.32')} />
         </g>
       ))}
     </g>
