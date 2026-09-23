@@ -4,19 +4,16 @@
   --bg-glow-1: rgba(56, 140, 220, 0.16);
   --bg-glow-2: rgba(45, 200, 220, 0.08);
   --panel: rgba(255, 255, 255, 0.03);
-  --panel-solid: #101830;
   --border: rgba(148, 180, 220, 0.16);
   --border-strong: rgba(148, 180, 220, 0.30);
   --text: #e8eef7;
   --text-strong: #ffffff;
   --muted: #93a4bb;
-  --accent: #7dd3fc;
-  --accent-strong: #38bdf8;
+  /* サイト唯一のアクセント色（旧 --accent / --accent-strong / --glyph / --accent-label を統合）。
+     テキスト・アイコン・下線バー・ラベル等すべてに使用。ダークは sky。 */
+  --accent: #38bdf8;
   --chip-bg: rgba(125, 211, 252, 0.08);
   --header-bg: rgba(11, 16, 32, 0.6);
-  --shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
-  /* 副アクセント（寄りの強調＝periwinkle）。cyan一辺倒の定番配色に厚みを与える。 */
-  --accent-2: #a5b4fc;
   /* ヒーロー背景モチーフ「寄り付き」の線色。テキストと干渉しないよう極薄。 */
   --art-line: rgba(125, 211, 252, 0.30);
   --art-open: rgba(165, 180, 252, 0.85);
@@ -29,19 +26,19 @@
   --bg-glow-1: rgba(56, 140, 220, 0.10);
   --bg-glow-2: rgba(45, 170, 200, 0.08);
   --panel: #ffffff;
-  --panel-solid: #ffffff;
   --border: #d9e2ee;
   --border-strong: #b9c9dd;
   --text: #1d2b42;
   --text-strong: #0d1b31;
   --muted: #5a6b82;
-  --accent: #024b68;
-  --accent-strong: #0284c7;
+  /* サイト唯一のアクセント色。ライトは royal blue。テキスト用途で AAA(bg#f4f7fb 上 ≈8.1:1) を
+     満たし、同色でアイコン/下線/ラベルも賄う（4トークン統合）。 */
+  --accent: #1533cf;
   --chip-bg: rgba(2, 132, 199, 0.08);
   --header-bg: rgba(244, 247, 251, 0.6);
-  --shadow: 0 12px 32px rgba(29, 43, 66, 0.10);
-  --accent-2: #443cd0;
-  --art-line: rgba(4, 90, 117, 0.22);
+  /* チャートは灰色に沈めず、アイコンと同系の sky で彩度を持たせる（始値ローソク/マーカーの
+     indigo=--art-open と二色になり、h1グラデ blue→indigo と呼応する）。 */
+  --art-line: rgba(2, 132, 199, 0.32);
   --art-open: rgba(68, 60, 208, 0.55);
   /* 見出しグラデは日英共通の1本（明背景用に一段深い blue→indigo）。
      グラデ全域が背景グロー込みでも WCAG AAA(大文字4.5) を満たす（最小CR≈5.9）。 */
@@ -131,8 +128,8 @@ a { color: inherit; }
   bottom: -7px;
   height: 2px;
   border-radius: 2px;
-  background: var(--accent-strong);
-  box-shadow: 0 0 8px var(--accent-strong);
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
   transition: left 0.3s ease, width 0.3s ease, opacity 0.2s ease;
   pointer-events: none;
 }
@@ -284,6 +281,7 @@ h1 .grad {
 section { padding: 88px 0; }
 .section-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 18px; margin-bottom: 48px; }
 h2 { font-size: clamp(24px, 3vw, 32px); color: var(--text-strong); font-weight: 700; }
+/* 反対言語ラベルは純装飾（視認性より様式）。統一アクセント --accent を使い、アイコン等と同色。 */
 .section-en { font-size: 12px; color: var(--accent); letter-spacing: 0.18em; }
 
 /* Capability cards */
@@ -310,7 +308,7 @@ h2 { font-size: clamp(24px, 3vw, 32px); color: var(--text-strong); font-weight: 
 @media (hover: hover) {
   .card:hover { transform: translateY(-4px); }
   .card:hover .glyph {
-    color: var(--accent-strong);
+    color: var(--accent);
     transform: translateY(-2px);
     filter: drop-shadow(0 0 10px var(--art-open));
   }
@@ -331,15 +329,33 @@ h2 { font-size: clamp(24px, 3vw, 32px); color: var(--text-strong); font-weight: 
 .company-row dd .main { font-size: 16px; color: var(--text-strong); }
 .company-row dd .sub { font-size: 13px; color: var(--muted); margin-top: 2px; }
 .nowrap { white-space: nowrap; }
-/* 住所の明示マップリンク。OS自動リンクの派手な青ではなく、意図的で控えめな下線に */
-.addr-link {
+/* サイト内テキストリンクの共通装飾。会社概要の住所リンク(.addr-link)を正とし、
+   公告リンク(.notice-link)もダーク/ライトとも完全に同一へ統一する。
+   OS自動リンクの派手な青を避け、文字色は inherit のまま控えめな下線に。 */
+.addr-link,
+.notice-link {
   color: inherit;
   text-decoration: underline;
   text-decoration-color: var(--border-strong);
   text-underline-offset: 3px;
   transition: text-decoration-color 0.2s;
 }
-.addr-link:hover { text-decoration-color: var(--accent); }
+.addr-link:hover,
+.notice-link:hover { text-decoration-color: var(--accent); }
+/* ライト時は下線を border-bottom 方式にし、hover は border/文字とも --accent へ。
+   非ホバー時の文字色は inherit のまま据え置く（変えない）。 */
+[data-theme="light"] .addr-link,
+[data-theme="light"] .notice-link {
+  text-decoration: none;
+  border-bottom: 1px solid var(--border-strong);
+  padding-bottom: 2px;
+  transition: color 0.2s, border-color 0.2s;
+}
+[data-theme="light"] .addr-link:hover,
+[data-theme="light"] .notice-link:hover {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
 
 /* ============ Public notice page ============ */
 .notice-main { padding: 168px 0 120px; min-height: 60vh; }
@@ -348,8 +364,10 @@ h2 { font-size: clamp(24px, 3vw, 32px); color: var(--text-strong); font-weight: 
   border-radius: 14px;
   background: var(--panel);
   padding: 44px 40px;
+  /* 箱の中の本文・リンクを一律 15px に。リンクに個別のサイズを持たせず周囲と一致させる。 */
+  font-size: 15px;
 }
-.notice-box p { font-size: 15px; color: var(--text); }
+.notice-box p { color: var(--text); }
 /* 段落を重ねる場合は1行分あける */
 .notice-box p + p { margin-top: 1.25em; }
 
@@ -387,19 +405,11 @@ h2 { font-size: clamp(24px, 3vw, 32px); color: var(--text-strong); font-weight: 
   border-radius: 50%;
   background: var(--muted);
 }
-.notice-link {
-  margin-top: 18px;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  text-decoration: none;
-  font-size: 15px;
-  color: var(--accent);
-  border-bottom: 1px solid var(--border-strong);
-  padding-bottom: 2px;
-  transition: color 0.2s, border-color 0.2s;
-}
-.notice-link:hover { color: var(--accent-strong); border-color: var(--accent-strong); }
+/* 装飾・色・サイズは上の共通リンク定義(.addr-link と同一)を継承。ここでは段落の下に
+   置くための配置のみ指定する（サイズは notice-box の 15px を継承＝周囲の本文と一致）。
+   inline-block の line-height の余白で下線が離れないよう line-height:1 で箱をテキストに
+   密着させ、下線距離を inline の .addr-link と一致させる。 */
+.notice-link { display: inline-block; margin-top: 18px; line-height: 1; }
 
 /* ============ Footer ============ */
 /* プレーンな上罫線に代え、両端がフェードするヘアライン＋中央の小さなダイヤで「締め」を作る。 */
@@ -421,7 +431,7 @@ h2 { font-size: clamp(24px, 3vw, 32px); color: var(--text-strong); font-weight: 
   width: 6px;
   height: 6px;
   transform: translateX(-50%) rotate(45deg);
-  background: var(--accent-strong);
+  background: var(--accent);
   border-radius: 1px;
 }
 .copyright { font-size: 12px; color: var(--muted); }
