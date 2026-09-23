@@ -37,6 +37,21 @@ const hrefEn = abs(alt.en);
 const ogLocale = isEn ? 'en_US' : 'ja_JP';
 const appName = isEn ? COMPANY.name.en : COMPANY.name.ja;
 
+// トップページ判定（言語問わず ja パスが '/' ならルート）。
+const isHome = alt.ja === '/';
+
+// 検索結果のサイト名（タイトル上部の表示）判定用。Google はこの WebSite の
+// name を最優先ソースとする。仕様どおりトップページにのみ出力する。
+// alternateName は希望順の配列。Google が name に確信を持てない場合、ここを
+// 順に候補として使う。最後にドメイン名（小文字）をバックアップとして置く。
+const SITE_JSONLD = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  url: `${SITE_URL}/`,
+  name: COMPANY.name.ja,
+  alternateName: [COMPANY.shortName, COMPANY.name.en, 'yoritsuki.co.jp'],
+};
+
 // 指名検索時のナレッジパネル形成用の組織情報
 const ORG_JSONLD = {
   '@context': 'https://schema.org',
@@ -112,6 +127,7 @@ const ORG_JSONLD = {
   </head>
   <body>
     <script is:inline set:html={BOOT_SCRIPT} />
+    {isHome && <script type="application/ld+json" is:inline set:html={JSON.stringify(SITE_JSONLD)} />}
     <script type="application/ld+json" is:inline set:html={JSON.stringify(ORG_JSONLD)} />
     <Header />
     <slot />
