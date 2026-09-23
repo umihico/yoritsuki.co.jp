@@ -65,7 +65,7 @@ const pathD =
           <line x1={k.cx} y1={k.wickY1} x2={k.cx} y2={k.wickY2} />
           {/* ローソク足の文法: 陽線(up)=中空 / 陰線(down)=塗り。色でなく形で陽陰を描き分け、
               赤緑クリシェを避けつつ単色規律を保つ。寄り(open)だけは別扱いで淡く塗って強調。 */}
-          <rect x={k.cx - bodyW / 2} y={k.bodyY} width={bodyW} height={k.bodyH} rx="1.5" fill={k.open ? 'currentColor' : (k.up ? 'none' : 'currentColor')} fill-opacity={k.open ? '0.14' : (k.up ? '0' : '0.32')} />
+          <rect x={k.cx - bodyW / 2} y={k.bodyY} width={bodyW} height={k.bodyH} rx="1.5" fill={k.open ? 'currentColor' : (k.up ? 'none' : 'var(--art-fill)')} fill-opacity={k.open ? '0.14' : (k.up ? '0' : '0.32')} />
         </g>
       ))}
     </g>
